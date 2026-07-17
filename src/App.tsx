@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import type { FormEvent, ReactNode } from 'react'
+import type {
+  FormEvent,
+  KeyboardEvent,
+  ReactNode,
+} from 'react'
 import {
   getDirectoryByPath,
  // virtualFileSystem,
@@ -12,7 +16,22 @@ const LINKEDIN_URL =
   'https://www.linkedin.com/in/jayasurya-pazhani/'
 const GITHUB_URL = 'https://github.com/jayasuryapazhani'
 const HOME_DIRECTORY = '/home/jayasurya'
-
+const AVAILABLE_COMMANDS = [
+  'help',
+  'info',
+  'ls',
+  'cd',
+  'pwd',
+  'whoami',
+  'about',
+  'skills',
+  'experience',
+  'education',
+  'projects',
+  'contact',
+  'socials',
+  'clear',
+]
 type TerminalEntry = {
   id: number
   command: string
@@ -114,7 +133,56 @@ const resolveDirectoryPath = (
 
   return candidatePath
 }
+const getAutocompleteValue = (
+  input: string,
+  currentPath: string[],
+): string | null => {
+  const inputWithoutLeadingSpaces = input.trimStart()
 
+  if (inputWithoutLeadingSpaces.toLowerCase().startsWith('cd ')) {
+    const directoryInput = inputWithoutLeadingSpaces
+      .slice(3)
+      .toLowerCase()
+
+    if (directoryInput.includes('/')) {
+      return null
+    }
+
+    const currentDirectory = getDirectoryByPath(currentPath)
+
+    const directoryOptions = [
+      '..',
+      '~',
+      ...Object.keys(currentDirectory?.children ?? {}),
+    ]
+
+    const matches = directoryOptions.filter((directoryName) =>
+      directoryName.toLowerCase().startsWith(directoryInput),
+    )
+
+    if (matches.length !== 1) {
+      return null
+    }
+
+    return `cd ${matches[0]}`
+  }
+
+  if (inputWithoutLeadingSpaces.includes(' ')) {
+    return null
+  }
+
+  const normalizedInput = inputWithoutLeadingSpaces.toLowerCase()
+
+  const matches = AVAILABLE_COMMANDS.filter((command) =>
+    command.startsWith(normalizedInput),
+  )
+
+  if (matches.length !== 1) {
+    return null
+  }
+
+  return matches[0]
+}
 const getDirectoryInfoOutput = (
   path: string[],
 ): ReactNode => {
@@ -526,6 +594,13 @@ function App() {
   const [visitorName, setVisitorName] =
     useState<string | null>(null)
   const [commandInput, setCommandInput] = useState('')
+  const [commandHistory, setCommandHistory] = useState<string[]>(
+  [],
+)
+
+const [commandHistoryIndex, setCommandHistoryIndex] = useState<
+  number | null
+>(null)
   const [currentPath, setCurrentPath] =
     useState<string[]>([])
   const [terminalEntries, setTerminalEntries] = useState<
@@ -570,7 +645,62 @@ function App() {
 
     setVisitorName(cleanedName)
   }
+const handleCommandKeyDown = (
+  event: KeyboardEvent<HTMLInputElement>,
+) => {
+  if (event.key === 'ArrowUp') {
+    event.preventDefault()
 
+    if (commandHistory.length === 0) {
+      return
+    }
+
+    const nextIndex =
+      commandHistoryIndex === null
+        ? commandHistory.length - 1
+        : Math.max(0, commandHistoryIndex - 1)
+
+    setCommandHistoryIndex(nextIndex)
+    setCommandInput(commandHistory[nextIndex])
+
+    return
+  }
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+
+    if (commandHistoryIndex === null) {
+      return
+    }
+
+    const nextIndex = commandHistoryIndex + 1
+
+    if (nextIndex >= commandHistory.length) {
+      setCommandHistoryIndex(null)
+      setCommandInput('')
+      return
+    }
+
+    setCommandHistoryIndex(nextIndex)
+    setCommandInput(commandHistory[nextIndex])
+
+    return
+  }
+
+  if (event.key === 'Tab') {
+    event.preventDefault()
+
+    const autocompleteValue = getAutocompleteValue(
+      commandInput,
+      currentPath,
+    )
+
+    if (autocompleteValue) {
+      setCommandInput(autocompleteValue)
+      setCommandHistoryIndex(null)
+    }
+  }
+}
   const handleCommandSubmit = (
     event: FormEvent<HTMLFormElement>,
   ) => {
@@ -585,7 +715,12 @@ function App() {
     if (!cleanedCommand) {
       return
     }
+setCommandHistory((currentHistory) => [
+  ...currentHistory,
+  cleanedCommand,
+].slice(-100))
 
+setCommandHistoryIndex(null)
     const commandResult = executeCommand(
       cleanedCommand,
       visitorName,
@@ -770,20 +905,22 @@ function App() {
                   {currentPrompt}
                 </label>
 
-                <input
-                  ref={commandInputRef}
-                  id="terminal-command"
-                  className="terminal__input terminal__command-input"
-                  type="text"
-                  value={commandInput}
-                  onChange={(event) =>
-                    setCommandInput(event.target.value)
-                  }
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  spellCheck={false}
-                  aria-label="Enter a terminal command"
-                />
+                  <input
+                    ref={commandInputRef}
+                    id="terminal-command"
+                    className="terminal__input terminal__command-input"
+                    type="text"
+                    value={commandInput}
+                    onChange={(event) => {
+                      setCommandInput(event.target.value)
+                      setCommandHistoryIndex(null)
+                    }}
+                    onKeyDown={handleCommandKeyDown}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    aria-label="Enter a terminal command"
+                  />
               </form>
             </div>
           )}
