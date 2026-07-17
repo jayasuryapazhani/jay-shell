@@ -337,16 +337,17 @@ const getAboutOutput = (): ReactNode => (
         Professional Experience
       </p>
 
-      <div className="terminal__detail-list">
-        {profile.professionalExperience.map((item) => (
-          <p
-            className="terminal__detail-item"
-            key={item}
-          >
-            {item}
-          </p>
-        ))}
-      </div>
+        <div className="terminal__detail-list">
+          {profile.workExperience.map((experience) => (
+            <p
+              className="terminal__detail-item"
+              key={`${experience.company}-${experience.title}`}
+            >
+              {experience.title} — {experience.company},{' '}
+              {experience.period}
+            </p>
+          ))}
+        </div>
     </section>
 
     <section className="terminal__profile-section">
@@ -500,45 +501,66 @@ const getExperienceOutput = (): ReactNode => (
   <div className="terminal__result terminal__portfolio-output">
     <div className="terminal__content-heading">
       <p className="terminal__section-title">
-        Experience
+        Professional Experience
       </p>
 
       <p className="terminal__content-description">
-        Professional software-engineering responsibilities and
-        practical development experience.
+        Professional software-engineering experience listed from
+        most recent to earliest.
       </p>
     </div>
 
-    <section className="terminal__content-card">
+    <div className="terminal__experience-list">
+      {profile.workExperience.map((experience) => (
+        <article
+          className="terminal__content-card terminal__experience-card"
+          key={`${experience.company}-${experience.title}`}
+        >
+          <header className="terminal__experience-header">
+            <div>
+              <p className="terminal__content-card-title">
+                {experience.title}
+              </p>
+
+              <p className="terminal__experience-company">
+                {experience.company}
+              </p>
+
+              <p className="terminal__muted">
+                {experience.location}
+              </p>
+            </div>
+
+            <span className="terminal__experience-period">
+              {experience.period}
+            </span>
+          </header>
+
+          <div className="terminal__detail-list">
+            {experience.responsibilities.map(
+              (responsibility) => (
+                <p
+                  className="terminal__detail-item"
+                  key={responsibility}
+                >
+                  {responsibility}
+                </p>
+              ),
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <section className="terminal__content-card terminal__project-experience">
       <p className="terminal__content-card-title">
-        Professional Software Engineering
+        Project and Hands-on Experience
       </p>
 
       <p className="terminal__content-note">
-        Desktop application development, debugging, testing, and
-        cross-functional engineering collaboration.
-      </p>
-
-      <div className="terminal__detail-list">
-        {profile.professionalExperience.map((item) => (
-          <p
-            className="terminal__detail-item"
-            key={item}
-          >
-            {item}
-          </p>
-        ))}
-      </div>
-    </section>
-
-    <section className="terminal__content-card">
-      <p className="terminal__content-card-title">
-        Hands-on Development
-      </p>
-
-      <p className="terminal__content-note">
-        Technologies and engineering practices applied through
-        independent and academic projects.
+        Independent development experience from deployed
+        applications, browser extensions, testing projects, and
+        developer tools.
       </p>
 
       <div className="terminal__detail-list">
@@ -581,6 +603,9 @@ const getEducationOutput = (): ReactNode => (
           <p className="terminal__muted">
             {education.location}
           </p>
+          <p className="terminal__muted">
+          {education.period}
+        </p>
         </div>
 
         <div className="terminal__detail-list">
