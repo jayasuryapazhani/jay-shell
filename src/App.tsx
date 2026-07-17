@@ -450,6 +450,145 @@ const getAboutOutput = (): ReactNode => (
     </section>
   </div>
 )
+const getSkillsOutput = (): ReactNode => (
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Technical Skills
+      </p>
+
+      <p className="terminal__content-description">
+        Technologies and tools used through professional work,
+        academic study, and hands-on software projects.
+      </p>
+    </div>
+
+    <div className="terminal__content-grid">
+      {profile.skills.map((skillGroup) => (
+        <section
+          className="terminal__content-card"
+          key={skillGroup.category}
+        >
+          <p className="terminal__content-card-title">
+            {skillGroup.category}
+          </p>
+
+          <div className="terminal__tag-list">
+            {skillGroup.skills.map((skill) => (
+              <span
+                className="terminal__tag"
+                key={skill}
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+)
+const getExperienceOutput = (): ReactNode => (
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Experience
+      </p>
+
+      <p className="terminal__content-description">
+        Professional software-engineering responsibilities and
+        practical development experience.
+      </p>
+    </div>
+
+    <section className="terminal__content-card">
+      <p className="terminal__content-card-title">
+        Professional Software Engineering
+      </p>
+
+      <p className="terminal__content-note">
+        Desktop application development, debugging, testing, and
+        cross-functional engineering collaboration.
+      </p>
+
+      <div className="terminal__detail-list">
+        {profile.professionalExperience.map((item) => (
+          <p
+            className="terminal__detail-item"
+            key={item}
+          >
+            {item}
+          </p>
+        ))}
+      </div>
+    </section>
+
+    <section className="terminal__content-card">
+      <p className="terminal__content-card-title">
+        Hands-on Development
+      </p>
+
+      <p className="terminal__content-note">
+        Technologies and engineering practices applied through
+        independent and academic projects.
+      </p>
+
+      <div className="terminal__detail-list">
+        {profile.handsOnExperience.map((item) => (
+          <p
+            className="terminal__detail-item"
+            key={item}
+          >
+            {item}
+          </p>
+        ))}
+      </div>
+    </section>
+  </div>
+)
+const getEducationOutput = (): ReactNode => (
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Education
+      </p>
+
+      <p className="terminal__content-description">
+        Academic background and software-engineering areas of study.
+      </p>
+    </div>
+
+    {profile.education.map((education) => (
+      <section
+        className="terminal__content-card"
+        key={`${education.institution}-${education.program}`}
+      >
+        <p className="terminal__content-card-title">
+          {education.program}
+        </p>
+
+        <div className="terminal__education-meta">
+          <p>{education.institution}</p>
+
+          <p className="terminal__muted">
+            {education.location}
+          </p>
+        </div>
+
+        <div className="terminal__detail-list">
+          {education.details.map((detail) => (
+            <p
+              className="terminal__detail-item"
+              key={detail}
+            >
+              {detail}
+            </p>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+)
 
 
 const getHelpOutput = (
@@ -676,53 +815,148 @@ const getHelpOutput = (
 
 
 const getContactOutput = (): ReactNode => (
-  <div className="terminal__result">
-    <p className="terminal__section-title">Contact</p>
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Contact
+      </p>
 
-    <p>
-      Email:{' '}
-      <a
-        className="terminal__link"
-        href={`mailto:${PORTFOLIO_CONFIG.contactEmail}`}
-      >
-        {PORTFOLIO_CONFIG.contactEmail}
-      </a>
-    </p>
+      <p className="terminal__content-description">
+        Contact Jayasurya regarding software-development roles,
+        technical projects, or professional opportunities.
+      </p>
+    </div>
+
+    <section className="terminal__content-card">
+      <p className="terminal__content-card-title">
+        Email
+      </p>
+
+      <p>
+        <a
+          className="terminal__link"
+          href={`mailto:${PORTFOLIO_CONFIG.contactEmail}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {PORTFOLIO_CONFIG.contactEmail}
+        </a>
+      </p>
+
+      <div className="terminal__contact-actions">
+        <a
+          className="terminal__resume-action"
+          href={`mailto:${PORTFOLIO_CONFIG.contactEmail}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          Send Email
+        </a>
+      </div>
+    </section>
   </div>
 )
 
 const getSocialsOutput = (): ReactNode => (
-  <div className="terminal__result">
-    <p className="terminal__section-title">
-      Social Profiles
-    </p>
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Social Profiles
+      </p>
 
-    <p>
-      LinkedIn:{' '}
-      <a
-        className="terminal__link"
-        href={PORTFOLIO_CONFIG.linkedInUrl}
-        target="_blank"
-        rel="noreferrer"
-      >
-        linkedin.com/in/jayasurya-pazhani
-      </a>
-    </p>
+      <p className="terminal__content-description">
+        Professional profiles, projects, repositories, and
+        development activity.
+      </p>
+    </div>
 
-    <p>
-      GitHub:{' '}
-      <a
-        className="terminal__link"
-        href={PORTFOLIO_CONFIG.githubUrl}
-        target="_blank"
-        rel="noreferrer"
-      >
-        github.com/jayasuryapazhani
-      </a>
-    </p>
+    <div className="terminal__content-grid">
+      <section className="terminal__content-card">
+        <p className="terminal__content-card-title">
+          LinkedIn
+        </p>
+
+        <p className="terminal__content-note">
+          Professional experience, education, and career updates.
+        </p>
+
+        <a
+          className="terminal__link"
+          href={PORTFOLIO_CONFIG.linkedInUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          linkedin.com/in/jayasurya-pazhani
+        </a>
+      </section>
+
+      <section className="terminal__content-card">
+        <p className="terminal__content-card-title">
+          GitHub
+        </p>
+
+        <p className="terminal__content-note">
+          Source code, project history, branches, and technical
+          documentation.
+        </p>
+
+        <a
+          className="terminal__link"
+          href={PORTFOLIO_CONFIG.githubUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          github.com/jayasuryapazhani
+        </a>
+      </section>
+    </div>
   </div>
 )
 
+const getResumeOutput = (): ReactNode => (
+  <div className="terminal__result terminal__portfolio-output">
+    <div className="terminal__content-heading">
+      <p className="terminal__section-title">
+        Resume
+      </p>
+
+      <p className="terminal__content-description">
+        View the resume in the browser or download a PDF copy.
+      </p>
+    </div>
+
+    <section className="terminal__content-card">
+      <p className="terminal__content-card-title">
+        Jayasurya Pazhani
+      </p>
+
+      <p className="terminal__content-note">
+        Software Engineer | MEng Software Engineering Student
+      </p>
+
+      <div className="terminal__resume-actions">
+        <a
+          className="terminal__resume-action"
+          href={PORTFOLIO_CONFIG.resumeUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          View Resume
+        </a>
+
+        <a
+          className="terminal__resume-action"
+          href={PORTFOLIO_CONFIG.resumeUrl}
+          download="Jayasurya-Pazhani-Resume.pdf"
+          onClick={(event) => event.stopPropagation()}
+        >
+          Download Resume
+        </a>
+      </div>
+    </section>
+  </div>
+)
 const executeCommand = (
   commandInput: string,
   visitorAlias: string,
@@ -825,29 +1059,20 @@ case 'about':
     output: getAboutOutput(),
   }
 
-    case 'skills':
-      return {
-        output: getDirectoryInfoOutput(
-          ['skills'],
-          onRunCommand,
-        ),
-      }
+      case 'skills':
+        return {
+          output: getSkillsOutput(),
+        }
 
-    case 'experience':
-      return {
-        output: getDirectoryInfoOutput(
-          ['experience'],
-          onRunCommand,
-        ),
-      }
+        case 'experience':
+          return {
+            output: getExperienceOutput(),
+          }
 
-    case 'education':
-      return {
-        output: getDirectoryInfoOutput(
-          ['education'],
-          onRunCommand,
-        ),
-      }
+        case 'education':
+          return {
+            output: getEducationOutput(),
+          }
 
     case 'projects':
       return {
@@ -866,41 +1091,10 @@ case 'about':
       return {
         output: getSocialsOutput(),
       }
-case 'resume':
-  return {
-    output: (
-      <div className="terminal__result">
-        <p className="terminal__section-title">
-          Resume
-        </p>
-
-        <div className="terminal__resume-actions">
-          <a
-            className="terminal__resume-action"
-            href={PORTFOLIO_CONFIG.resumeUrl}
-            target="_blank"
-            rel="noreferrer"
-            onClick={(event) =>
-              event.stopPropagation()
-            }
-          >
-            View Resume
-          </a>
-
-          <a
-            className="terminal__resume-action"
-            href={PORTFOLIO_CONFIG.resumeUrl}
-            download="Jayasurya-Pazhani-Resume.pdf"
-            onClick={(event) =>
-              event.stopPropagation()
-            }
-          >
-            Download Resume
-          </a>
-        </div>
-      </div>
-    ),
-  }
+      case 'resume':
+        return {
+          output: getResumeOutput(),
+        }
     case 'stack':
       return {
         output: currentProject
