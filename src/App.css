@@ -1,42 +1,46 @@
 #root {
+  width: 100%;
   min-height: 100vh;
 }
 
 .app-shell {
-  display: grid;
+  width: 100%;
   min-height: 100vh;
-  place-items: center;
-  padding: 24px;
+  padding: 28px;
 }
 
 .terminal {
-  width: min(920px, 100%);
-  min-height: 560px;
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 56px);
+  min-height: 500px;
+  flex-direction: column;
   overflow: hidden;
-  border: 1px solid #263238;
-  border-radius: 12px;
-  background: #0b0f10;
-  box-shadow:
-    0 24px 80px rgb(0 0 0 / 45%),
-    0 0 0 1px rgb(255 255 255 / 3%);
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: #0c0c0c;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 45%);
 }
 
 .terminal__header {
-  position: relative;
-  display: flex;
+  display: grid;
+  min-height: 42px;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  min-height: 46px;
-  padding: 0 18px;
-  border-bottom: 1px solid #263238;
-  background: #161b1d;
+  padding: 0 14px;
+  border-bottom: 1px solid #30363d;
+  background: #1c1c1c;
+  user-select: none;
 }
 
 .terminal__controls {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
 .terminal__control {
+  display: block;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -55,125 +59,161 @@
 }
 
 .terminal__title {
-  position: absolute;
-  left: 50%;
   margin: 0;
-  color: #9ba5a8;
-  font-size: 0.82rem;
-  transform: translateX(-50%);
+  color: #b8b8b8;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.terminal__header-space {
+  min-width: 1px;
 }
 
 .terminal__body {
-  min-height: 514px;
-  padding: 34px;
-  color: #d5dedf;
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px 32px;
+  color: #f2f2f2;
   font-family:
-    'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace;
-  font-size: 1rem;
-  line-height: 1.7;
+    'Cascadia Mono',
+    'Cascadia Code',
+    'JetBrains Mono',
+    'SFMono-Regular',
+    Consolas,
+    'Liberation Mono',
+    Menlo,
+    monospace;
+  font-size: 14px;
+  font-variant-ligatures: none;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.terminal__body p {
+  margin: 0;
 }
 
 .terminal__intro {
-  margin-bottom: 38px;
+  margin-bottom: 28px;
 }
 
 .terminal__intro p {
-  margin: 4px 0;
+  margin-bottom: 3px;
 }
 
 .terminal__brand {
-  margin-bottom: 10px;
-  color: #72f1b8;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  color: #4af2a1;
+  font-weight: 600;
 }
 
 .terminal__highlight {
-  color: #72f1b8;
+  color: #4af2a1;
 }
 
-.name-prompt {
+.name-prompt__line {
   display: flex;
-  max-width: 520px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.terminal__input-row {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 12px;
-}
-
-.terminal__prompt {
-  color: #72f1b8;
-  font-weight: 700;
+.name-prompt__line label {
+  flex-shrink: 0;
 }
 
 .terminal__input {
-  width: 100%;
-  padding: 8px 0;
+  padding: 0;
   border: 0;
-  border-bottom: 1px solid #405054;
-  outline: none;
+  outline: 0;
   background: transparent;
-  color: #ffffff;
-  caret-color: #72f1b8;
+  color: #f2f2f2;
+  caret-color: #f2f2f2;
+  font: inherit;
 }
 
-.terminal__input:focus {
-  border-bottom-color: #72f1b8;
+.terminal__input--name {
+  width: min(400px, 100%);
+  min-width: 120px;
 }
 
-.terminal__submit {
-  padding: 7px 14px;
-  border: 1px solid #405054;
-  border-radius: 5px;
-  background: transparent;
-  color: #b9c5c7;
-  cursor: pointer;
-}
-
-.terminal__submit:hover,
-.terminal__submit:focus-visible {
-  border-color: #72f1b8;
-  color: #72f1b8;
+.terminal__submitted-name {
+  margin-bottom: 20px;
 }
 
 .terminal__output {
-  max-width: 760px;
+  display: flex;
+  flex-direction: column;
 }
 
-.terminal__output p {
-  margin: 10px 0;
+.terminal__response {
+  display: flex;
+  margin-bottom: 22px;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.terminal__muted {
-  color: #7f8c8f;
+.terminal__command-line {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  white-space: nowrap;
 }
 
-@media (max-width: 600px) {
+.terminal__prompt {
+  flex-shrink: 0;
+  color: #4af2a1;
+  font-weight: 500;
+}
+
+.terminal__command {
+  color: #f5d76e;
+}
+
+.terminal__cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: #f2f2f2;
+  animation: terminal-blink 1s steps(1) infinite;
+  transform: translateY(3px);
+}
+
+@keyframes terminal-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
   .app-shell {
-    padding: 0;
+    padding: 12px;
   }
 
   .terminal {
-    min-height: 100vh;
-    border: 0;
-    border-radius: 0;
+    height: calc(100vh - 24px);
+    min-height: calc(100vh - 24px);
   }
 
-  .terminal__title {
-    position: static;
-    margin-left: auto;
-    transform: none;
+  .terminal__header {
+    min-height: 40px;
   }
 
   .terminal__body {
-    min-height: calc(100vh - 46px);
-    padding: 24px 18px;
-    font-size: 0.9rem;
+    padding: 22px 18px;
+    font-size: 13px;
+  }
+
+  .name-prompt__line {
+    flex-wrap: wrap;
+  }
+
+  .terminal__input--name {
+    min-width: 160px;
   }
 }

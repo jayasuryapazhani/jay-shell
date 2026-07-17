@@ -4,9 +4,23 @@ import './App.css'
 
 const OWNER_NAME = 'Jayasurya Pazhani'
 
+const createTerminalUsername = (name: string) => {
+  const firstName = name.trim().split(/\s+/)[0]
+
+  const username = firstName
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, '')
+
+  return username || 'visitor'
+}
+
 function App() {
   const [nameInput, setNameInput] = useState('')
   const [visitorName, setVisitorName] = useState<string | null>(null)
+
+  const terminalUsername = visitorName
+    ? createTerminalUsername(visitorName)
+    : 'visitor'
 
   const handleNameSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -33,15 +47,23 @@ function App() {
             <span className="terminal__control terminal__control--maximize" />
           </div>
 
-          <p className="terminal__title">visitor@jayshell: ~</p>
+          <p className="terminal__title">
+            {terminalUsername}@jayshell:~
+          </p>
+
+          <div className="terminal__header-space" aria-hidden="true" />
         </header>
 
         <div className="terminal__body">
           <div className="terminal__intro">
             <p className="terminal__brand">JAYSHELL v0.1.0</p>
             <p>Interactive terminal portfolio</p>
+
             <p>
-              Owner: <span className="terminal__highlight">{OWNER_NAME}</span>
+              Owner:{' '}
+              <span className="terminal__highlight">
+                {OWNER_NAME}
+              </span>
             </p>
           </div>
 
@@ -51,49 +73,70 @@ function App() {
               onSubmit={handleNameSubmit}
               aria-label="Visitor name form"
             >
-              <label htmlFor="visitor-name">Enter your name:</label>
-
-              <div className="terminal__input-row">
-                <span className="terminal__prompt" aria-hidden="true">
-                  &gt;
-                </span>
+              <div className="name-prompt__line">
+                <label htmlFor="visitor-name">
+                  Enter your name:
+                </label>
 
                 <input
                   id="visitor-name"
-                  className="terminal__input"
+                  className="terminal__input terminal__input--name"
                   type="text"
                   value={nameInput}
                   onChange={(event) => setNameInput(event.target.value)}
                   maxLength={40}
-                  autoComplete="name"
+                  autoComplete="off"
                   autoFocus
+                  spellCheck={false}
                   aria-label="Enter your name"
                 />
               </div>
-
-              <button className="terminal__submit" type="submit">
-                Enter ↵
-              </button>
             </form>
           ) : (
             <div className="terminal__output" aria-live="polite">
-              <p>
-                Hello,{' '}
-                <strong className="terminal__highlight">{visitorName}</strong>.
+              <p className="terminal__submitted-name">
+                Enter your name:{' '}
+                <span>{visitorName}</span>
               </p>
 
-              <p>
-                Welcome to {OWNER_NAME}&apos;s interactive developer portfolio.
-              </p>
+              <div className="terminal__response">
+                <p>
+                  Hello,{' '}
+                  <span className="terminal__highlight">
+                    {visitorName}
+                  </span>
+                  .
+                </p>
 
-              <p>
-                Explore my background, skills, experience, and software
-                projects through a terminal-inspired interface.
-              </p>
+                <p>
+                  Welcome to {OWNER_NAME}&apos;s interactive developer
+                  portfolio.
+                </p>
 
-              <p className="terminal__muted">
-                Session initialized. Command support will be added next.
-              </p>
+                <p>
+                  Explore my background, skills, experience, and software
+                  projects through terminal commands.
+                </p>
+
+                <p>
+                  Type{' '}
+                  <span className="terminal__command">
+                    help
+                  </span>{' '}
+                  to view available commands.
+                </p>
+              </div>
+
+              <div className="terminal__command-line">
+                <span className="terminal__prompt">
+                  {terminalUsername}@jayshell:~$
+                </span>
+
+                <span
+                  className="terminal__cursor"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
           )}
         </div>

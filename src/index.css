@@ -1,6 +1,6 @@
 :root {
   color-scheme: dark;
-  background: #050707;
+  background: #050505;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,14 +14,15 @@
 html {
   min-width: 320px;
   min-height: 100%;
+  background: #050505;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at top, #172123 0%, #080b0c 42%, #050707 100%);
+  overflow: hidden;
+  background: #050505;
 }
 
 button,
