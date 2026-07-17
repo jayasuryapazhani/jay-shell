@@ -10,10 +10,18 @@ import type {
   KeyboardEvent,
   ReactNode,
 } from 'react'
+
+
 import {
   getDirectoryByPath,
  // virtualFileSystem,
 } from './data/virtualFileSystem'
+
+import {
+  getProjectByPath,
+  type ProjectDetails,
+} from './data/projects'
+
 import './App.css'
 
 const OWNER_NAME = 'Jayasurya Pazhani'
@@ -36,6 +44,14 @@ const AVAILABLE_COMMANDS = [
   'projects',
   'contact',
   'socials',
+  'stack',
+  'features',
+  'testing',
+  'architecture',
+  'lessons',
+  'github',
+  'demo',
+  'store',
   'clear',
 ]
 type TerminalEntry = {
@@ -49,6 +65,7 @@ type CommandResult = {
   output: ReactNode | null
   nextPath?: string[]
   clear?: boolean
+  externalUrl?: string
 }
 
 type CommandRunner = (command: string) => void
@@ -364,6 +381,111 @@ const getListOutput = (
   )
 }
 
+
+const getProjectOverviewOutput = (
+  project: ProjectDetails,
+): ReactNode => (
+  <div className="terminal__result">
+    <p className="terminal__section-title">
+      {project.name}
+    </p>
+
+    <div className="terminal__project-meta">
+      <p>
+        <span>Type:</span>
+        {project.category}
+      </p>
+
+      <p>
+        <span>Status:</span>
+        {project.status}
+      </p>
+    </div>
+
+    {project.summary.map((paragraph, index) => (
+      <p key={`${project.slug}-summary-${index}`}>
+        {paragraph}
+      </p>
+    ))}
+
+    <p className="terminal__muted">
+      Type <span className="terminal__command">help</span>{' '}
+      to view project-specific commands.
+    </p>
+  </div>
+)
+
+const getProjectDetailOutput = (
+  title: string,
+  items: string[],
+): ReactNode => (
+  <div className="terminal__result">
+    <p className="terminal__section-title">{title}</p>
+
+    <div className="terminal__detail-list">
+      {items.map((item) => (
+        <p className="terminal__detail-item" key={item}>
+          {item}
+        </p>
+      ))}
+    </div>
+  </div>
+)
+
+const getProjectCommandError = (
+  command: string,
+): ReactNode => (
+  <div className="terminal__result terminal__error">
+    <p>
+      jayshell: {command}: command is only available inside
+      an individual project directory
+    </p>
+
+    <p>
+      Try{' '}
+      <span className="terminal__command">
+        cd projects
+      </span>
+      .
+    </p>
+  </div>
+)
+
+const getUnavailableProjectLinkOutput = (
+  project: ProjectDetails,
+  linkType: string,
+): ReactNode => (
+  <div className="terminal__result terminal__muted">
+    <p>
+      {project.name} does not currently have a public{' '}
+      {linkType} link.
+    </p>
+  </div>
+)
+
+const getExternalProjectLinkOutput = (
+  label: string,
+  url: string,
+): ReactNode => (
+  <div className="terminal__result">
+    <p className="terminal__section-title">{label}</p>
+
+    <p>
+      Opening:{' '}
+      <a
+        className="terminal__link"
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {url}
+      </a>
+    </p>
+  </div>
+)
+
+
 const getHelpOutput = (
   path: string[],
   onRunCommand: CommandRunner,
@@ -377,6 +499,7 @@ const getHelpOutput = (
   )
 
   const currentSection = path[0]
+  const currentProject = getProjectByPath(path)
 
   return (
     <div className="terminal__result">
@@ -515,7 +638,71 @@ const getHelpOutput = (
           </div>
         </>
       )}
+      {currentProject && (
+  <>
+    <p className="terminal__section-title">
+      Project commands
+    </p>
+
+    <div className="terminal__help-list">
+      <HelpAction
+        command="stack"
+        description="Display the project technology stack"
+        onRunCommand={onRunCommand}
+      />
+
+      <HelpAction
+        command="features"
+        description="Display key project features"
+        onRunCommand={onRunCommand}
+      />
+
+      <HelpAction
+        command="testing"
+        description="Display testing and validation details"
+        onRunCommand={onRunCommand}
+      />
+
+      <HelpAction
+        command="architecture"
+        description="Display the project architecture"
+        onRunCommand={onRunCommand}
+      />
+
+      <HelpAction
+        command="lessons"
+        description="Display lessons learned"
+        onRunCommand={onRunCommand}
+      />
+
+      {currentProject.githubUrl && (
+        <HelpAction
+          command="github"
+          description="Open the GitHub repository"
+          onRunCommand={onRunCommand}
+        />
+      )}
+
+      {currentProject.demoUrl && (
+        <HelpAction
+          command="demo"
+          description="Open the live application"
+          onRunCommand={onRunCommand}
+        />
+      )}
+
+      {currentProject.storeUrl && (
+        <HelpAction
+          command="store"
+          description="Open the Chrome Web Store listing"
+          onRunCommand={onRunCommand}
+        />
+      )}
     </div>
+  </>
+)}
+    </div>
+    
   )
 }
 const getContactOutput = (): ReactNode => (
@@ -575,6 +762,7 @@ const executeCommand = (
   const commandParts = commandInput.trim().split(/\s+/)
   const commandName = commandParts[0].toLowerCase()
   const commandArguments = commandParts.slice(1)
+  const currentProject = getProjectByPath(currentPath)
 
   switch (commandName) {
     case 'help':
@@ -584,15 +772,15 @@ const executeCommand = (
             onRunCommand,
           ),
       }
-
-    case 'info':
-      return {
-          output: getDirectoryInfoOutput(
-            currentPath,
-            onRunCommand,
-          ),
-
-            }
+      case 'info':
+        return {
+          output: currentProject
+            ? getProjectOverviewOutput(currentProject)
+            : getDirectoryInfoOutput(
+                currentPath,
+                onRunCommand,
+              ),
+        }
 
     case 'ls':
       return {
@@ -710,7 +898,127 @@ const executeCommand = (
       return {
         output: getSocialsOutput(),
       }
+case 'stack':
+  return {
+    output: currentProject
+      ? getProjectDetailOutput(
+          `${currentProject.name}: Technology Stack`,
+          currentProject.stack,
+        )
+      : getProjectCommandError('stack'),
+  }
 
+case 'features':
+  return {
+    output: currentProject
+      ? getProjectDetailOutput(
+          `${currentProject.name}: Features`,
+          currentProject.features,
+        )
+      : getProjectCommandError('features'),
+  }
+
+case 'testing':
+  return {
+    output: currentProject
+      ? getProjectDetailOutput(
+          `${currentProject.name}: Testing`,
+          currentProject.testing,
+        )
+      : getProjectCommandError('testing'),
+  }
+
+case 'architecture':
+  return {
+    output: currentProject
+      ? getProjectDetailOutput(
+          `${currentProject.name}: Architecture`,
+          currentProject.architecture,
+        )
+      : getProjectCommandError('architecture'),
+  }
+
+case 'lessons':
+  return {
+    output: currentProject
+      ? getProjectDetailOutput(
+          `${currentProject.name}: Lessons Learned`,
+          currentProject.lessons,
+        )
+      : getProjectCommandError('lessons'),
+  }
+
+case 'github':
+  if (!currentProject) {
+    return {
+      output: getProjectCommandError('github'),
+    }
+  }
+
+  if (!currentProject.githubUrl) {
+    return {
+      output: getUnavailableProjectLinkOutput(
+        currentProject,
+        'GitHub repository',
+      ),
+    }
+  }
+
+  return {
+    output: getExternalProjectLinkOutput(
+      `${currentProject.name}: GitHub`,
+      currentProject.githubUrl,
+    ),
+    externalUrl: currentProject.githubUrl,
+  }
+
+case 'demo':
+  if (!currentProject) {
+    return {
+      output: getProjectCommandError('demo'),
+    }
+  }
+
+  if (!currentProject.demoUrl) {
+    return {
+      output: getUnavailableProjectLinkOutput(
+        currentProject,
+        'live demo',
+      ),
+    }
+  }
+
+  return {
+    output: getExternalProjectLinkOutput(
+      `${currentProject.name}: Live Demo`,
+      currentProject.demoUrl,
+    ),
+    externalUrl: currentProject.demoUrl,
+  }
+
+case 'store':
+  if (!currentProject) {
+    return {
+      output: getProjectCommandError('store'),
+    }
+  }
+
+  if (!currentProject.storeUrl) {
+    return {
+      output: getUnavailableProjectLinkOutput(
+        currentProject,
+        'store',
+      ),
+    }
+  }
+
+  return {
+    output: getExternalProjectLinkOutput(
+      `${currentProject.name}: Chrome Web Store`,
+      currentProject.storeUrl,
+    ),
+    externalUrl: currentProject.storeUrl,
+  }
     case 'clear':
       return {
         output: null,
@@ -896,7 +1204,13 @@ const runCommand = useCallback(
       activePath,
       runCommandFromOutput,
     )
-
+if (commandResult.externalUrl) {
+  window.open(
+    commandResult.externalUrl,
+    '_blank',
+    'noopener,noreferrer',
+  )
+}
     if (commandResult.clear) {
       setTerminalEntries([])
       setCommandInput('')
@@ -977,7 +1291,7 @@ const handleCommandSubmit = (
         >
           <div className="terminal__intro">
             <p className="terminal__brand">
-              JAYSHELL v0.4.0
+              JAYSHELL v0.5.0
             </p>
 
             <p>Interactive terminal portfolio</p>

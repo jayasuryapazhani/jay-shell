@@ -293,6 +293,38 @@
   color: #9ba3af;
 }
 
+
+.terminal__project-meta {
+  display: flex;
+  margin-bottom: 6px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal__project-meta p {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  column-gap: 10px;
+}
+
+.terminal__project-meta span {
+  color: #70a5ff;
+  font-weight: 600;
+}
+
+.terminal__detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal__detail-item::before {
+  margin-right: 8px;
+  color: #4af2a1;
+  content: '-';
+}
+
+
 @media (max-width: 700px) {
   .app-shell {
     padding: 12px;
