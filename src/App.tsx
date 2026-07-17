@@ -1,121 +1,104 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import type { FormEvent } from 'react'
 import './App.css'
 
+const OWNER_NAME = 'Jayasurya Pazhani'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [nameInput, setNameInput] = useState('')
+  const [visitorName, setVisitorName] = useState<string | null>(null)
+
+  const handleNameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const cleanedName = nameInput.trim()
+
+    if (!cleanedName) {
+      return
+    }
+
+    setVisitorName(cleanedName)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="app-shell">
+      <section
+        className="terminal"
+        aria-label="JayShell interactive terminal portfolio"
+      >
+        <header className="terminal__header">
+          <div className="terminal__controls" aria-hidden="true">
+            <span className="terminal__control terminal__control--close" />
+            <span className="terminal__control terminal__control--minimize" />
+            <span className="terminal__control terminal__control--maximize" />
+          </div>
 
-      <div className="ticks"></div>
+          <p className="terminal__title">visitor@jayshell: ~</p>
+        </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="terminal__body">
+          <div className="terminal__intro">
+            <p className="terminal__brand">JAYSHELL v0.1.0</p>
+            <p>Interactive terminal portfolio</p>
+            <p>
+              Owner: <span className="terminal__highlight">{OWNER_NAME}</span>
+            </p>
+          </div>
+
+          {visitorName === null ? (
+            <form
+              className="name-prompt"
+              onSubmit={handleNameSubmit}
+              aria-label="Visitor name form"
+            >
+              <label htmlFor="visitor-name">Enter your name:</label>
+
+              <div className="terminal__input-row">
+                <span className="terminal__prompt" aria-hidden="true">
+                  &gt;
+                </span>
+
+                <input
+                  id="visitor-name"
+                  className="terminal__input"
+                  type="text"
+                  value={nameInput}
+                  onChange={(event) => setNameInput(event.target.value)}
+                  maxLength={40}
+                  autoComplete="name"
+                  autoFocus
+                  aria-label="Enter your name"
+                />
+              </div>
+
+              <button className="terminal__submit" type="submit">
+                Enter ↵
+              </button>
+            </form>
+          ) : (
+            <div className="terminal__output" aria-live="polite">
+              <p>
+                Hello,{' '}
+                <strong className="terminal__highlight">{visitorName}</strong>.
+              </p>
+
+              <p>
+                Welcome to {OWNER_NAME}&apos;s interactive developer portfolio.
+              </p>
+
+              <p>
+                Explore my background, skills, experience, and software
+                projects through a terminal-inspired interface.
+              </p>
+
+              <p className="terminal__muted">
+                Session initialized. Command support will be added next.
+              </p>
+            </div>
+          )}
         </div>
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   )
 }
 
