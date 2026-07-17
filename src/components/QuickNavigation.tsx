@@ -101,6 +101,9 @@ export function QuickNavigation({
           Keyboard: <span>Tab</span> autocomplete
         </p>
         <p>
+        Command log: <span>history</span>
+        </p>
+        <p>
         Clear screen: <span>clear / cls</span>
         </p>
       </div>

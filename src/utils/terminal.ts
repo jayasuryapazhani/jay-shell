@@ -160,3 +160,89 @@ export const getAutocompleteValue = (
 
   return matches[0]
 }
+
+const getEditDistance = (
+  source: string,
+  target: string,
+): number => {
+  const previousRow = Array.from(
+    { length: target.length + 1 },
+    (_, index) => index,
+  )
+
+  for (
+    let sourceIndex = 1;
+    sourceIndex <= source.length;
+    sourceIndex += 1
+  ) {
+    const currentRow: number[] = [sourceIndex]
+
+    for (
+      let targetIndex = 1;
+      targetIndex <= target.length;
+      targetIndex += 1
+    ) {
+      const substitutionCost =
+        source[sourceIndex - 1] === target[targetIndex - 1]
+          ? 0
+          : 1
+
+      currentRow[targetIndex] = Math.min(
+        currentRow[targetIndex - 1] + 1,
+        previousRow[targetIndex] + 1,
+        previousRow[targetIndex - 1] + substitutionCost,
+      )
+    }
+
+    for (
+      let index = 0;
+      index < currentRow.length;
+      index += 1
+    ) {
+      previousRow[index] = currentRow[index]
+    }
+  }
+
+  return previousRow[target.length]
+}
+
+export const getSuggestedCommand = (
+  input: string,
+): string | null => {
+  const normalizedInput = input
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)[0]
+
+  if (!normalizedInput) {
+    return null
+  }
+
+  const matches = AVAILABLE_COMMANDS
+    .map((command) => ({
+      command,
+      distance: getEditDistance(
+        normalizedInput,
+        command,
+      ),
+    }))
+    .sort(
+      (firstMatch, secondMatch) =>
+        firstMatch.distance - secondMatch.distance,
+    )
+
+  const bestMatch = matches[0]
+
+  if (!bestMatch) {
+    return null
+  }
+
+  const maximumDistance =
+    normalizedInput.length <= 4 ? 1 : 2
+
+  if (bestMatch.distance > maximumDistance) {
+    return null
+  }
+
+  return bestMatch.command
+}

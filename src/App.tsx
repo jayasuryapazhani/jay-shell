@@ -38,14 +38,19 @@ import type {
   StartupPhase,
   TerminalEntry,
 } from './types/terminal'
+
+
 import {
   createDirectoryCommand,
   createTerminalUsername,
   formatPromptPath,
   formatVirtualPath,
   getAutocompleteValue,
+  getSuggestedCommand,
   resolveDirectoryPath,
 } from './utils/terminal'
+
+
 import { generateVisitorAlias } from './utils/visitorAlias'
 import './App.css'
 
@@ -668,6 +673,11 @@ const getHelpOutput = (
           description="Display the current terminal user"
           onRunCommand={onRunCommand}
         />
+        <HelpAction
+          command="history"
+          description="Display commands entered during this session"
+          onRunCommand={onRunCommand}
+        />
       <HelpAction
         command="clear"
         label="clear / cls"
@@ -1089,17 +1099,51 @@ const getProjectsOutput = (
   )
 }
 
+const getCommandHistoryOutput = (
+  commandHistory: string[],
+): ReactNode => {
+  if (commandHistory.length === 0) {
+    return (
+      <div className="terminal__result terminal__muted">
+        <p>No commands have been entered in this session.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="terminal__result">
+      <p className="terminal__section-title">
+        Command History
+      </p>
+
+      <div className="terminal__command-history-list">
+        {commandHistory.map((command, index) => (
+          <p key={`${index}-${command}`}>
+            <span className="terminal__history-number">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+
+            <span>{command}</span>
+          </p>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const executeCommand = (
   commandInput: string,
   visitorAlias: string,
   currentPath: string[],
+  commandHistory: string[],
   onRunCommand: CommandRunner,
 ): CommandResult => {
   const commandParts = commandInput.trim().split(/\s+/)
   const commandName = commandParts[0].toLowerCase()
   const commandArguments = commandParts.slice(1)
   const currentProject = getProjectByPath(currentPath)
+const suggestedCommand =
+  getSuggestedCommand(commandName)
 
   switch (commandName) {
     case 'help':
@@ -1355,6 +1399,11 @@ case 'about':
         ),
         externalUrl: currentProject.storeUrl,
       }
+
+        case 'history':
+        return {
+          output: getCommandHistoryOutput(commandHistory),
+        }                        
       case 'clear':
       case 'cls':
         return {
@@ -1362,24 +1411,38 @@ case 'about':
           clear: true,
         }
 
-    default:
-      return {
-        output: (
-          <div className="terminal__result terminal__error">
-            <p>
-              jayshell: command not found: {commandInput}
-            </p>
+      default:
+        return {
+          output: (
+            <div className="terminal__result terminal__error">
+              <p>
+                jayshell: command not found: {commandInput}
+              </p>
 
-            <p>
-              Type{' '}
-              <span className="terminal__command">
-                help
-              </span>{' '}
-              to see available commands.
-            </p>
-          </div>
-        ),
-      }
+              {suggestedCommand ? (
+                <p className="terminal__suggestion-line">
+                  Did you mean:{' '}
+                  <TerminalAction
+                    command={suggestedCommand}
+                    onRunCommand={onRunCommand}
+                    className="terminal__suggestion-command"
+                  >
+                    {suggestedCommand}
+                  </TerminalAction>
+                  ?
+                </p>
+              ) : (
+                <p>
+                  Type{' '}
+                  <span className="terminal__command">
+                    help
+                  </span>{' '}
+                  to see available commands.
+                </p>
+              )}
+            </div>
+          ),
+        }
   }
 }
 
@@ -1409,6 +1472,7 @@ const [typedIntroduction, setTypedIntroduction] =
   const terminalBodyRef = useRef<HTMLDivElement>(null)
   const commandInputRef = useRef<HTMLInputElement>(null)
   const entryIdRef = useRef(0)
+  const commandHistoryRef = useRef<string[]>([])
   const visitorAliasRef = useRef(visitorAlias)
   const currentPathRef = useRef<string[]>([])
   const currentPromptRef = useRef('')
@@ -1510,18 +1574,22 @@ useEffect(() => {
       const activePath = currentPathRef.current
       const activePrompt = currentPromptRef.current
 
-      setCommandHistory((currentHistory) =>
-        [...currentHistory, cleanedCommand].slice(-100),
-      )
+        const nextCommandHistory = [
+          ...commandHistoryRef.current,
+          cleanedCommand,
+        ].slice(-100)
 
-      setCommandHistoryIndex(null)
+        commandHistoryRef.current = nextCommandHistory
+        setCommandHistory(nextCommandHistory)
+        setCommandHistoryIndex(null)
 
-      const commandResult = executeCommand(
-        cleanedCommand,
-        activeVisitorAlias,
-        activePath,
-        runCommandFromOutput,
-      )
+        const commandResult = executeCommand(
+          cleanedCommand,
+          activeVisitorAlias,
+          activePath,
+          nextCommandHistory,
+          runCommandFromOutput,
+        )
 
       if (commandResult.externalUrl) {
         window.open(

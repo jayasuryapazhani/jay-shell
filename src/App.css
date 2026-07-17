@@ -765,6 +765,40 @@
 }
 
 
+.terminal__command-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal__command-history-list p {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.terminal__history-number {
+  color: #788488;
+  text-align: right;
+  user-select: none;
+}
+
+.terminal__suggestion-line {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.terminal__suggestion-command {
+  color: #70a5ff;
+  font-weight: 700;
+}
+
+.terminal__suggestion-command:hover,
+.terminal__suggestion-command:focus-visible {
+  color: #a8c7ff;
+}
+
 @media (max-width: 1050px) {
   .terminal__workspace--ready {
     grid-template-columns: 1fr;
