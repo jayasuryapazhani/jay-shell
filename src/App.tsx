@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+
 import type {
   FormEvent,
   KeyboardEvent,
@@ -45,6 +51,66 @@ type CommandResult = {
   clear?: boolean
 }
 
+type CommandRunner = (command: string) => void
+
+type TerminalActionProps = {
+  command: string
+  onRunCommand: CommandRunner
+  children: ReactNode
+  className?: string
+}
+
+type HelpActionProps = {
+  command: string
+  label?: string
+  description: string
+  onRunCommand: CommandRunner
+}
+
+function TerminalAction({
+  command,
+  onRunCommand,
+  children,
+  className = '',
+}: TerminalActionProps) {
+  return (
+    <button
+      className={`terminal__action ${className}`.trim()}
+      type="button"
+      title={`Run command: ${command}`}
+      onClick={(event) => {
+        event.stopPropagation()
+        onRunCommand(command)
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+function HelpAction({
+  command,
+  label = command,
+  description,
+  onRunCommand,
+}: HelpActionProps) {
+  return (
+    <p>
+      <TerminalAction
+        command={command}
+        onRunCommand={onRunCommand}
+        className="terminal__action--command"
+      >
+        {label}
+      </TerminalAction>
+
+      <span className="terminal__help-description">
+        {description}
+      </span>
+    </p>
+  )
+}
+
 const createTerminalUsername = (name: string) => {
   const firstName = name.trim().split(/\s+/)[0]
 
@@ -69,6 +135,15 @@ const formatPromptPath = (path: string[]) => {
   }
 
   return `~/${path.join('/')}`
+}
+
+const createDirectoryCommand = (
+  currentPath: string[],
+  directoryName: string,
+) => {
+  const targetPath = [...currentPath, directoryName].join('/')
+
+  return `cd ${HOME_DIRECTORY}/${targetPath}`
 }
 
 const resolveDirectoryPath = (
@@ -185,6 +260,7 @@ const getAutocompleteValue = (
 }
 const getDirectoryInfoOutput = (
   path: string[],
+  onRunCommand: CommandRunner,
 ): ReactNode => {
   const directory = getDirectoryByPath(path)
 
@@ -220,9 +296,17 @@ const getDirectoryInfoOutput = (
 
           <div className="terminal__directory-list">
             {childDirectories.map((directoryName) => (
-              <span key={directoryName}>
+              <TerminalAction
+                key={directoryName}
+                command={createDirectoryCommand(
+                  path,
+                  directoryName,
+                )}
+                onRunCommand={onRunCommand}
+                className="terminal__action--directory"
+              >
                 {directoryName}/
-              </span>
+              </TerminalAction>
             ))}
           </div>
         </>
@@ -231,8 +315,11 @@ const getDirectoryInfoOutput = (
   )
 }
 
-const getListOutput = (path: string[]): ReactNode => {
-  const directory = getDirectoryByPath(path)
+const getListOutput = (
+  path: string[],
+  onRunCommand: CommandRunner,
+): ReactNode => {
+    const directory = getDirectoryByPath(path)
 
   if (!directory) {
     return (
@@ -259,22 +346,36 @@ const getListOutput = (path: string[]): ReactNode => {
   }
 
   return (
-    <div className="terminal__directory-list">
-      {childDirectories.map((directoryName) => (
-        <span key={directoryName}>
-          {directoryName}/
-        </span>
-      ))}
-    </div>
+        <div className="terminal__directory-list">
+          {childDirectories.map((directoryName) => (
+            <TerminalAction
+              key={directoryName}
+              command={createDirectoryCommand(
+                path,
+                directoryName,
+              )}
+              onRunCommand={onRunCommand}
+              className="terminal__action--directory"
+            >
+              {directoryName}/
+            </TerminalAction>
+          ))}
+        </div>
   )
 }
 
-const getHelpOutput = (path: string[]): ReactNode => {
+const getHelpOutput = (
+  path: string[],
+  onRunCommand: CommandRunner,
+): ReactNode => {
   const directory = getDirectoryByPath(path)
+
   const currentPath = formatVirtualPath(path)
+
   const childDirectories = Object.keys(
     directory?.children ?? {},
   )
+
   const currentSection = path[0]
 
   return (
@@ -284,52 +385,67 @@ const getHelpOutput = (path: string[]): ReactNode => {
       </p>
 
       <div className="terminal__help-list">
-        <p>
-          <span>help</span>
-          Show help for the current directory
-        </p>
+        <HelpAction
+          command="help"
+          description="Show help for the current directory"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>info</span>
-          Display information about the current directory
-        </p>
+        <HelpAction
+          command="info"
+          description="Display information about the current directory"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>ls</span>
-          List subdirectories
-        </p>
+        <HelpAction
+          command="ls"
+          description="List subdirectories"
+          onRunCommand={onRunCommand}
+        />
 
         {childDirectories.length > 0 && (
           <p>
-            <span>cd &lt;name&gt;</span>
-            Enter a subdirectory
+            <span className="terminal__help-placeholder">
+              cd &lt;name&gt;
+            </span>
+
+            <span className="terminal__help-description">
+              Enter a subdirectory
+            </span>
           </p>
         )}
 
-        <p>
-          <span>cd ..</span>
-          Move to the parent directory
-        </p>
+        <HelpAction
+          command="cd .."
+          label="cd .."
+          description="Move to the parent directory"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>cd ~</span>
-          Return to the home directory
-        </p>
+        <HelpAction
+          command="cd ~"
+          label="cd ~"
+          description="Return to the home directory"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>pwd</span>
-          Display the current path
-        </p>
+        <HelpAction
+          command="pwd"
+          description="Display the current path"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>whoami</span>
-          Display the current terminal user
-        </p>
+        <HelpAction
+          command="whoami"
+          description="Display the current terminal user"
+          onRunCommand={onRunCommand}
+        />
 
-        <p>
-          <span>clear</span>
-          Clear command history
-        </p>
+        <HelpAction
+          command="clear"
+          description="Clear command history"
+          onRunCommand={onRunCommand}
+        />
       </div>
 
       {path.length === 0 && (
@@ -339,40 +455,47 @@ const getHelpOutput = (path: string[]): ReactNode => {
           </p>
 
           <div className="terminal__help-list">
-            <p>
-              <span>about</span>
-              Display information about Jayasurya
-            </p>
+            <HelpAction
+              command="about"
+              description="Display information about Jayasurya"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>skills</span>
-              Display technical skills
-            </p>
+            <HelpAction
+              command="skills"
+              description="Display technical skills"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>experience</span>
-              Display professional experience
-            </p>
+            <HelpAction
+              command="experience"
+              description="Display professional experience"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>education</span>
-              Display education
-            </p>
+            <HelpAction
+              command="education"
+              description="Display education"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>projects</span>
-              Display featured projects
-            </p>
+            <HelpAction
+              command="projects"
+              description="Display featured projects"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>contact</span>
-              Display contact information
-            </p>
+            <HelpAction
+              command="contact"
+              description="Display contact information"
+              onRunCommand={onRunCommand}
+            />
 
-            <p>
-              <span>socials</span>
-              Display LinkedIn and GitHub
-            </p>
+            <HelpAction
+              command="socials"
+              description="Display LinkedIn and GitHub"
+              onRunCommand={onRunCommand}
+            />
           </div>
         </>
       )}
@@ -384,17 +507,17 @@ const getHelpOutput = (path: string[]): ReactNode => {
           </p>
 
           <div className="terminal__help-list">
-            <p>
-              <span>{currentSection}</span>
-              Display the main {currentSection} section
-            </p>
+            <HelpAction
+              command={currentSection}
+              description={`Display the main ${currentSection} section`}
+              onRunCommand={onRunCommand}
+            />
           </div>
         </>
       )}
     </div>
   )
 }
-
 const getContactOutput = (): ReactNode => (
   <div className="terminal__result">
     <p className="terminal__section-title">Contact</p>
@@ -447,6 +570,7 @@ const executeCommand = (
   commandInput: string,
   visitorName: string,
   currentPath: string[],
+  onRunCommand: CommandRunner,
 ): CommandResult => {
   const commandParts = commandInput.trim().split(/\s+/)
   const commandName = commandParts[0].toLowerCase()
@@ -455,17 +579,27 @@ const executeCommand = (
   switch (commandName) {
     case 'help':
       return {
-        output: getHelpOutput(currentPath),
+                  output: getHelpOutput(
+            currentPath,
+            onRunCommand,
+          ),
       }
 
     case 'info':
       return {
-        output: getDirectoryInfoOutput(currentPath),
-      }
+          output: getDirectoryInfoOutput(
+            currentPath,
+            onRunCommand,
+          ),
+
+            }
 
     case 'ls':
       return {
-        output: getListOutput(currentPath),
+            output: getListOutput(
+              currentPath,
+              onRunCommand,
+            ),
       }
 
     case 'pwd':
@@ -527,30 +661,45 @@ const executeCommand = (
       }
     }
 
-    case 'about':
-      return {
-        output: getDirectoryInfoOutput(['about']),
-      }
+  case 'about':
+    return {
+      output: getDirectoryInfoOutput(
+        ['about'],
+        onRunCommand,
+      ),
+    }
 
-    case 'skills':
-      return {
-        output: getDirectoryInfoOutput(['skills']),
-      }
+  case 'skills':
+    return {
+      output: getDirectoryInfoOutput(
+        ['skills'],
+        onRunCommand,
+      ),
+    }
 
-    case 'experience':
-      return {
-        output: getDirectoryInfoOutput(['experience']),
-      }
+  case 'experience':
+    return {
+      output: getDirectoryInfoOutput(
+        ['experience'],
+        onRunCommand,
+      ),
+    }
 
-    case 'education':
-      return {
-        output: getDirectoryInfoOutput(['education']),
-      }
+  case 'education':
+    return {
+      output: getDirectoryInfoOutput(
+        ['education'],
+        onRunCommand,
+      ),
+    }
 
-    case 'projects':
-      return {
-        output: getDirectoryInfoOutput(['projects']),
-      }
+  case 'projects':
+    return {
+      output: getDirectoryInfoOutput(
+        ['projects'],
+        onRunCommand,
+      ),
+    }
 
     case 'contact':
       return {
@@ -610,7 +759,10 @@ const [commandHistoryIndex, setCommandHistoryIndex] = useState<
   const terminalBodyRef = useRef<HTMLDivElement>(null)
   const commandInputRef = useRef<HTMLInputElement>(null)
   const entryIdRef = useRef(0)
-
+const visitorNameRef = useRef<string | null>(null)
+const currentPathRef = useRef<string[]>([])
+const currentPromptRef = useRef('')
+const commandRunnerRef = useRef<CommandRunner>(() => undefined)
   const terminalUsername = visitorName
     ? createTerminalUsername(visitorName)
     : 'visitor'
@@ -618,7 +770,11 @@ const [commandHistoryIndex, setCommandHistoryIndex] = useState<
   const currentPrompt = `${terminalUsername}@jayshell:${formatPromptPath(
     currentPath,
   )}$`
-
+useEffect(() => {
+  visitorNameRef.current = visitorName
+  currentPathRef.current = currentPath
+  currentPromptRef.current = currentPrompt
+}, [visitorName, currentPath, currentPrompt])
   useEffect(() => {
     if (visitorName) {
       commandInputRef.current?.focus()
@@ -701,30 +857,44 @@ const handleCommandKeyDown = (
     }
   }
 }
-  const handleCommandSubmit = (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault()
 
-    if (!visitorName) {
+
+const runCommandFromOutput = useCallback(
+  (command: string) => {
+    commandRunnerRef.current(command)
+  },
+  [],
+)
+
+const runCommand = useCallback(
+  (rawCommand: string) => {
+    const activeVisitorName = visitorNameRef.current
+
+    if (!activeVisitorName) {
       return
     }
 
-    const cleanedCommand = commandInput.trim()
+    const cleanedCommand = rawCommand.trim()
 
     if (!cleanedCommand) {
       return
     }
-setCommandHistory((currentHistory) => [
-  ...currentHistory,
-  cleanedCommand,
-].slice(-100))
 
-setCommandHistoryIndex(null)
+    const activePath = currentPathRef.current
+    const activePrompt = currentPromptRef.current
+
+    setCommandHistory((currentHistory) => [
+      ...currentHistory,
+      cleanedCommand,
+    ].slice(-100))
+
+    setCommandHistoryIndex(null)
+
     const commandResult = executeCommand(
       cleanedCommand,
-      visitorName,
-      currentPath,
+      activeVisitorName,
+      activePath,
+      runCommandFromOutput,
     )
 
     if (commandResult.clear) {
@@ -738,7 +908,7 @@ setCommandHistoryIndex(null)
     const newEntry: TerminalEntry = {
       id: entryIdRef.current,
       command: cleanedCommand,
-      prompt: currentPrompt,
+      prompt: activePrompt,
       output: commandResult.output,
     }
 
@@ -752,8 +922,21 @@ setCommandHistoryIndex(null)
     }
 
     setCommandInput('')
-  }
+  },
+  [runCommandFromOutput],
+)
 
+useEffect(() => {
+  commandRunnerRef.current = runCommand
+}, [runCommand])
+
+
+const handleCommandSubmit = (
+  event: FormEvent<HTMLFormElement>,
+) => {
+  event.preventDefault()
+  runCommand(commandInput)
+}
   const focusCommandInput = () => {
     if (visitorName) {
       commandInputRef.current?.focus()
@@ -794,7 +977,7 @@ setCommandHistoryIndex(null)
         >
           <div className="terminal__intro">
             <p className="terminal__brand">
-              JAYSHELL v0.3.0
+              JAYSHELL v0.4.0
             </p>
 
             <p>Interactive terminal portfolio</p>
