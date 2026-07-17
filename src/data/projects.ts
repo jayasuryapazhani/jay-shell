@@ -84,6 +84,68 @@ const projectsBySlug: Record<string, ProjectDetails> = {
       'https://chromewebstore.google.com/detail/shrtn/adodmibgcbmnhdagfkipjpjfkeaalfim',
   },
 
+siptime: {
+  slug: 'siptime',
+  name: 'SipTime',
+  category: 'Browser Extension / Productivity',
+  status: 'Published',
+  summary: [
+    'A lightweight hydration reminder extension for Chrome and Brave.',
+    'Schedules interval-based or fixed-time reminders while keeping all settings and user data locally in the browser.',
+  ],
+  stack: [
+    'React',
+    'TypeScript',
+    'Vite',
+    'Tailwind CSS',
+    'Chrome Extensions',
+    'Manifest V3',
+    'Chrome Alarms API',
+    'Chrome Notifications API',
+    'Chrome Storage API',
+  ],
+  features: [
+    'Interval-based hydration reminders',
+    'Fixed-time reminders for specific times of day',
+    'Quiet hours with overnight time-range support',
+    'Notification snoozing',
+    'Next-reminder display in the extension popup',
+    'Dedicated settings page with validation and feedback',
+    'Local browser storage without external accounts',
+    'Chrome and Brave browser support',
+    'Published through the Chrome Web Store',
+  ],
+  testing: [
+    'TypeScript compilation validation',
+    'ESLint static analysis',
+    'Vite production-build validation',
+    'Manual reminder-scheduling tests',
+    'Manual notification and snooze testing',
+    'Quiet-hours boundary and overnight-range testing',
+    'Chrome and Brave extension-loading validation',
+  ],
+  architecture: [
+    'Manifest V3 browser-extension architecture',
+    'Background service worker for alarms and notifications',
+    'React popup interface for reminder status',
+    'React options page for settings management',
+    'Shared TypeScript types and browser-storage helpers',
+    'Entirely client-side operation with no backend server',
+  ],
+  lessons: [
+    'Working with Chrome alarm and notification APIs',
+    'Persisting strongly typed settings in browser storage',
+    'Coordinating popup, options, and background contexts',
+    'Handling time-based scheduling and quiet-hour boundaries',
+    'Preparing and publishing a browser extension',
+  ],
+  githubUrl:
+    'https://github.com/jayasuryapazhani/SipTime',
+  storeUrl:
+    'https://chromewebstore.google.com/detail/siptime/npjkkjooolnpkpmleojnembmiaeccnml',
+},
+
+
   supportbot: {
     slug: 'supportbot',
     name: 'SupportBot',
@@ -192,6 +254,128 @@ const projectsBySlug: Record<string, ProjectDetails> = {
       'Designing information-dense interfaces for small screens',
     ],
   },
+
+
+'slot-machine-pixijs': {
+  slug: 'slot-machine-pixijs',
+  name: 'PixiJS Slot Machine',
+  category: 'Browser Game / Interactive Graphics',
+  status: 'Completed',
+  summary: [
+    'A responsive 5-by-3 slot machine game rendered with PixiJS.',
+    'Implements animated reels, blur effects, dynamic symbol bands, payline evaluation, payouts, and visual win highlighting.',
+  ],
+  stack: [
+    'JavaScript',
+    'PixiJS',
+    'HTML5',
+    'CSS3',
+    'WebGL',
+  ],
+  features: [
+    'Animated asset-loading screen',
+    'Interactive custom spin control',
+    'Five animated reels with motion blur',
+    'Dynamic symbol rendering from reelset bands',
+    'Five horizontal and diagonal paylines',
+    'Symbol-based payout calculation',
+    'Winning-symbol highlight animation',
+    'Current reel-position display',
+    'Detailed winnings display',
+    'Responsive browser layout',
+  ],
+  testing: [
+    'Manual spin-cycle testing',
+    'Payline and payout verification',
+    'Winning-symbol highlight validation',
+    'Asset-loading validation',
+    'Repeated randomized-reel testing',
+    'Responsive layout testing across viewport sizes',
+  ],
+  architecture: [
+    'Client-side static browser application',
+    'PixiJS rendering stage and display-object hierarchy',
+    'Asset preloader for symbol textures',
+    'Independent reel animation state',
+    'Reelset-band data for symbol positioning',
+    'Payline evaluator separated from rendering behavior',
+  ],
+  lessons: [
+    'Building an interactive rendering loop with PixiJS',
+    'Managing animated reel state and timing',
+    'Applying blur effects during movement',
+    'Separating game rules from visual rendering',
+    'Designing responsive canvas-based interfaces',
+  ],
+  githubUrl:
+    'https://github.com/jayasuryapazhani/slot-machine-pixijs',
+  demoUrl:
+    'https://sparky1505.github.io/slot-machine-pixijs/',
+},
+
+
+
+warzone: {
+  slug: 'warzone',
+  name: 'Warzone',
+  category: 'Java CLI / Academic Team Project',
+  status: 'Completed',
+  summary: [
+    'A Java command-line implementation of the Warzone strategy game developed as a team project for Advanced Programming Practices.',
+    'The application models players, maps, territories, game phases, orders, player strategies, and tournament execution.',
+  ],
+  stack: [
+    'Java 17',
+    'Maven',
+    'JUnit 4',
+    'JUnit 5',
+    'Command-Line Interface',
+    'Git',
+    'Javadoc',
+  ],
+  features: [
+    'Command-line game interaction',
+    'Warzone map loading and validation',
+    'Player and territory management',
+    'Deploy and advance orders',
+    'Special-card and diplomacy orders',
+    'Multiple computer-player strategies',
+    'Tournament game mode',
+    'Conquest map-format support',
+    'Generated Javadoc documentation',
+    'Collaborative team development',
+  ],
+  testing: [
+    'JUnit 4 and JUnit 5 test dependencies',
+    'Model and game-rule testing',
+    'Map and continent validation testing',
+    'Order execution testing',
+    'Player-strategy testing',
+    'Tournament-mode testing',
+    'Test-suite execution through Maven',
+  ],
+  architecture: [
+    'Model, View, Controller, and Service packages',
+    'Game engine responsible for phase coordination',
+    'Order objects representing player actions',
+    'Strategy-based computer-player implementations',
+    'Map-reader services for supported map formats',
+    'Tournament orchestration and reporting',
+  ],
+  lessons: [
+    'Applying object-oriented design to a large domain model',
+    'Coordinating development across a multi-person team',
+    'Using Maven for dependency and build management',
+    'Writing and organizing JUnit test suites',
+    'Applying design patterns to game-engine behavior',
+    'Maintaining technical documentation with Javadoc',
+  ],
+  githubUrl:
+    'https://github.com/jayasuryapazhani/Warzone',
+},
+
+
+
 
   'jay-shell': {
     slug: 'jay-shell',

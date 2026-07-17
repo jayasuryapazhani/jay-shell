@@ -66,6 +66,15 @@ export const virtualFileSystem: VirtualDirectory = {
           ],
         },
 
+        siptime: {
+          name: 'siptime',
+          title: 'SipTime',
+          description: [
+            'A lightweight hydration reminder browser extension published for Chrome and Brave.',
+            'Built with React, TypeScript, Vite, Tailwind CSS, Chrome Extension Manifest V3, alarms, notifications, and local browser storage.',
+          ],
+        },
+
         supportbot: {
           name: 'supportbot',
           title: 'SupportBot',
@@ -90,6 +99,24 @@ export const virtualFileSystem: VirtualDirectory = {
           description: [
             'An interactive terminal-style portfolio built with React, TypeScript, and Vite.',
             'It includes terminal commands, virtual directories, contextual help, project navigation, and responsive terminal styling.',
+          ],
+        },
+
+        'slot-machine-pixijs': {
+          name: 'slot-machine-pixijs',
+          title: 'PixiJS Slot Machine',
+          description: [
+            'A responsive 5-by-3 slot machine browser game rendered using PixiJS.',
+            'It includes animated reels, motion blur, dynamic symbols, payline evaluation, payouts, and winning-symbol highlights.',
+          ],
+        },
+
+        warzone: {
+          name: 'warzone',
+          title: 'Warzone',
+          description: [
+            'A Java command-line implementation of the Warzone strategy game developed as an academic team project.',
+            'It includes map handling, players, game phases, orders, computer-player strategies, tournament execution, Maven, and JUnit testing.',
           ],
         },
       },
