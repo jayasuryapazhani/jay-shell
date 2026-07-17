@@ -1,6 +1,6 @@
 export const PORTFOLIO_CONFIG = {
   appName: 'JayShell',
-  version: '0.14.0',
+  version: '0.16.0',
   hostName: 'jayshell',
   ownerName: 'Jayasurya Pazhani',
   contactEmail: 'pazhanijayasurya@gmail.com',
