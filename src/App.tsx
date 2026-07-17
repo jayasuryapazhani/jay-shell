@@ -4,71 +4,32 @@ import {
   useRef,
   useState,
 } from 'react'
-
 import type {
   FormEvent,
   KeyboardEvent,
   ReactNode,
 } from 'react'
-
-
-import {
-  getDirectoryByPath,
- // virtualFileSystem,
-} from './data/virtualFileSystem'
-
+import { PORTFOLIO_CONFIG } from './config/portfolio'
 import {
   getProjectByPath,
   type ProjectDetails,
 } from './data/projects'
-
+import { getDirectoryByPath } from './data/virtualFileSystem'
+import type {
+  CommandResult,
+  CommandRunner,
+  TerminalEntry,
+} from './types/terminal'
+import {
+  createDirectoryCommand,
+  createTerminalUsername,
+  formatPromptPath,
+  formatVirtualPath,
+  getAutocompleteValue,
+  resolveDirectoryPath,
+} from './utils/terminal'
 import './App.css'
 
-const OWNER_NAME = 'Jayasurya Pazhani'
-const CONTACT_EMAIL = 'pazhanijayasurya@gmail.com'
-const LINKEDIN_URL =
-  'https://www.linkedin.com/in/jayasurya-pazhani/'
-const GITHUB_URL = 'https://github.com/jayasuryapazhani'
-const HOME_DIRECTORY = '/home/jayasurya'
-const AVAILABLE_COMMANDS = [
-  'help',
-  'info',
-  'ls',
-  'cd',
-  'pwd',
-  'whoami',
-  'about',
-  'skills',
-  'experience',
-  'education',
-  'projects',
-  'contact',
-  'socials',
-  'stack',
-  'features',
-  'testing',
-  'architecture',
-  'lessons',
-  'github',
-  'demo',
-  'store',
-  'clear',
-]
-type TerminalEntry = {
-  id: number
-  command: string
-  prompt: string
-  output: ReactNode | null
-}
-
-type CommandResult = {
-  output: ReactNode | null
-  nextPath?: string[]
-  clear?: boolean
-  externalUrl?: string
-}
-
-type CommandRunner = (command: string) => void
 
 type TerminalActionProps = {
   command: string
@@ -128,153 +89,8 @@ function HelpAction({
   )
 }
 
-const createTerminalUsername = (name: string) => {
-  const firstName = name.trim().split(/\s+/)[0]
 
-  const username = firstName
-    .toLowerCase()
-    .replace(/[^a-z0-9_-]/g, '')
 
-  return username || 'visitor'
-}
-
-const formatVirtualPath = (path: string[]) => {
-  if (path.length === 0) {
-    return HOME_DIRECTORY
-  }
-
-  return `${HOME_DIRECTORY}/${path.join('/')}`
-}
-
-const formatPromptPath = (path: string[]) => {
-  if (path.length === 0) {
-    return '~'
-  }
-
-  return `~/${path.join('/')}`
-}
-
-const createDirectoryCommand = (
-  currentPath: string[],
-  directoryName: string,
-) => {
-  const targetPath = [...currentPath, directoryName].join('/')
-
-  return `cd ${HOME_DIRECTORY}/${targetPath}`
-}
-
-const resolveDirectoryPath = (
-  target: string,
-  currentPath: string[],
-): string[] | null => {
-  const normalizedTarget = target
-    .trim()
-    .replaceAll('\\', '/')
-
-  let candidatePath: string[]
-  let pathToProcess: string
-
-  if (
-    normalizedTarget === '' ||
-    normalizedTarget === '~' ||
-    normalizedTarget === HOME_DIRECTORY
-  ) {
-    return []
-  }
-
-  if (normalizedTarget.startsWith('~/')) {
-    candidatePath = []
-    pathToProcess = normalizedTarget.slice(2)
-  } else if (
-    normalizedTarget.startsWith(`${HOME_DIRECTORY}/`)
-  ) {
-    candidatePath = []
-    pathToProcess = normalizedTarget.slice(
-      HOME_DIRECTORY.length + 1,
-    )
-  } else if (normalizedTarget.startsWith('/')) {
-    return null
-  } else {
-    candidatePath = [...currentPath]
-    pathToProcess = normalizedTarget
-  }
-
-  const pathSegments = pathToProcess.split('/')
-
-  for (const segment of pathSegments) {
-    const normalizedSegment = segment.trim().toLowerCase()
-
-    if (
-      normalizedSegment === '' ||
-      normalizedSegment === '.'
-    ) {
-      continue
-    }
-
-    if (normalizedSegment === '..') {
-      candidatePath.pop()
-      continue
-    }
-
-    candidatePath.push(normalizedSegment)
-  }
-
-  if (!getDirectoryByPath(candidatePath)) {
-    return null
-  }
-
-  return candidatePath
-}
-const getAutocompleteValue = (
-  input: string,
-  currentPath: string[],
-): string | null => {
-  const inputWithoutLeadingSpaces = input.trimStart()
-
-  if (inputWithoutLeadingSpaces.toLowerCase().startsWith('cd ')) {
-    const directoryInput = inputWithoutLeadingSpaces
-      .slice(3)
-      .toLowerCase()
-
-    if (directoryInput.includes('/')) {
-      return null
-    }
-
-    const currentDirectory = getDirectoryByPath(currentPath)
-
-    const directoryOptions = [
-      '..',
-      '~',
-      ...Object.keys(currentDirectory?.children ?? {}),
-    ]
-
-    const matches = directoryOptions.filter((directoryName) =>
-      directoryName.toLowerCase().startsWith(directoryInput),
-    )
-
-    if (matches.length !== 1) {
-      return null
-    }
-
-    return `cd ${matches[0]}`
-  }
-
-  if (inputWithoutLeadingSpaces.includes(' ')) {
-    return null
-  }
-
-  const normalizedInput = inputWithoutLeadingSpaces.toLowerCase()
-
-  const matches = AVAILABLE_COMMANDS.filter((command) =>
-    command.startsWith(normalizedInput),
-  )
-
-  if (matches.length !== 1) {
-    return null
-  }
-
-  return matches[0]
-}
 const getDirectoryInfoOutput = (
   path: string[],
   onRunCommand: CommandRunner,
@@ -713,9 +529,9 @@ const getContactOutput = (): ReactNode => (
       Email:{' '}
       <a
         className="terminal__link"
-        href={`mailto:${CONTACT_EMAIL}`}
+        href={`mailto:${PORTFOLIO_CONFIG.contactEmail}`}
       >
-        {CONTACT_EMAIL}
+        {PORTFOLIO_CONFIG.contactEmail}
       </a>
     </p>
   </div>
@@ -731,7 +547,7 @@ const getSocialsOutput = (): ReactNode => (
       LinkedIn:{' '}
       <a
         className="terminal__link"
-        href={LINKEDIN_URL}
+        href={PORTFOLIO_CONFIG.linkedInUrl}
         target="_blank"
         rel="noreferrer"
       >
@@ -743,7 +559,7 @@ const getSocialsOutput = (): ReactNode => (
       GitHub:{' '}
       <a
         className="terminal__link"
-        href={GITHUB_URL}
+        href={PORTFOLIO_CONFIG.githubUrl}
         target="_blank"
         rel="noreferrer"
       >
@@ -1075,9 +891,9 @@ const commandRunnerRef = useRef<CommandRunner>(() => undefined)
     ? createTerminalUsername(visitorName)
     : 'visitor'
 
-  const currentPrompt = `${terminalUsername}@jayshell:${formatPromptPath(
-    currentPath,
-  )}$`
+const currentPrompt =
+  `${terminalUsername}@${PORTFOLIO_CONFIG.hostName}:` +
+  `${formatPromptPath(currentPath)}$`
 useEffect(() => {
   visitorNameRef.current = visitorName
   currentPathRef.current = currentPath
@@ -1274,7 +1090,7 @@ const handleCommandSubmit = (
           </div>
 
           <p className="terminal__title">
-            {terminalUsername}@jayshell:
+            {terminalUsername}@{PORTFOLIO_CONFIG.hostName}:
             {formatPromptPath(currentPath)}
           </p>
 
@@ -1291,7 +1107,8 @@ const handleCommandSubmit = (
         >
           <div className="terminal__intro">
             <p className="terminal__brand">
-              JAYSHELL v0.5.0
+            {PORTFOLIO_CONFIG.appName.toUpperCase()} v
+            {PORTFOLIO_CONFIG.version}
             </p>
 
             <p>Interactive terminal portfolio</p>
@@ -1299,7 +1116,7 @@ const handleCommandSubmit = (
             <p>
               Owner:{' '}
               <span className="terminal__highlight">
-                {OWNER_NAME}
+                {PORTFOLIO_CONFIG.ownerName}
               </span>
             </p>
           </div>
@@ -1346,7 +1163,7 @@ const handleCommandSubmit = (
                 </p>
 
                 <p>
-                  Welcome to {OWNER_NAME}&apos;s interactive
+                  Welcome to {PORTFOLIO_CONFIG.ownerName}&apos;s interactive
                   developer portfolio.
                 </p>
 
