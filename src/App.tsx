@@ -668,12 +668,12 @@ const getHelpOutput = (
           description="Display the current terminal user"
           onRunCommand={onRunCommand}
         />
-
-        <HelpAction
-          command="clear"
-          description="Clear command history"
-          onRunCommand={onRunCommand}
-        />
+      <HelpAction
+        command="clear"
+        label="clear / cls"
+        description="Clear terminal output"
+        onRunCommand={onRunCommand}
+      />
       </div>
 
       {currentProject && (
@@ -1355,12 +1355,12 @@ case 'about':
         ),
         externalUrl: currentProject.storeUrl,
       }
-
-    case 'clear':
-      return {
-        output: null,
-        clear: true,
-      }
+      case 'clear':
+      case 'cls':
+        return {
+          output: null,
+          clear: true,
+        }
 
     default:
       return {

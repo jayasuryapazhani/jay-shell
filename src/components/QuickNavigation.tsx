@@ -100,6 +100,9 @@ export function QuickNavigation({
         <p>
           Keyboard: <span>Tab</span> autocomplete
         </p>
+        <p>
+        Clear screen: <span>clear / cls</span>
+        </p>
       </div>
     </aside>
   )
