@@ -11,6 +11,8 @@ export type CommandResult = {
   output: ReactNode | null
   nextPath?: string[]
   clear?: boolean
+  reset?: boolean
+  reboot?: boolean
   externalUrl?: string
 }
 

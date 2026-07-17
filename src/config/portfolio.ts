@@ -1,6 +1,6 @@
 export const PORTFOLIO_CONFIG = {
   appName: 'JayShell',
-  version: '0.13.0',
+  version: '0.14.0',
   hostName: 'jayshell',
   ownerName: 'Jayasurya Pazhani',
   contactEmail: 'pazhanijayasurya@gmail.com',
@@ -35,6 +35,8 @@ export const AVAILABLE_COMMANDS = [
   'demo',
   'store',
   'history',
+  'reset',
+  'reboot',
   'clear',
   'cls',
 ] as const

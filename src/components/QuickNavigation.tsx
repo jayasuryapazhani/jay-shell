@@ -106,6 +106,13 @@ export function QuickNavigation({
         <p>
         Clear screen: <span>clear / cls</span>
         </p>
+        <p>
+        Reset terminal: <span>reset</span>
+        </p>
+
+        <p>
+        New session: <span>reboot</span>
+        </p>
       </div>
     </aside>
   )

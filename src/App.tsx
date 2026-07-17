@@ -678,12 +678,25 @@ const getHelpOutput = (
           description="Display commands entered during this session"
           onRunCommand={onRunCommand}
         />
-      <HelpAction
-        command="clear"
-        label="clear / cls"
-        description="Clear terminal output"
-        onRunCommand={onRunCommand}
-      />
+
+        <HelpAction
+          command="reset"
+          description="Clear output and return to the home directory"
+          onRunCommand={onRunCommand}
+        />
+
+        <HelpAction
+          command="reboot"
+          description="Restart JayShell with a new visitor alias"
+          onRunCommand={onRunCommand}
+        />
+
+        <HelpAction
+          command="clear"
+          label="clear / cls"
+          description="Clear terminal output"
+          onRunCommand={onRunCommand}
+        />
       </div>
 
       {currentProject && (
@@ -1404,12 +1417,24 @@ case 'about':
         return {
           output: getCommandHistoryOutput(commandHistory),
         }                        
-      case 'clear':
-      case 'cls':
-        return {
-          output: null,
-          clear: true,
-        }
+        case 'reset':
+          return {
+            output: null,
+            reset: true,
+          }
+
+        case 'reboot':
+          return {
+            output: null,
+            reboot: true,
+          }
+
+        case 'clear':
+        case 'cls':
+          return {
+            output: null,
+            clear: true,
+          }
 
       default:
         return {
@@ -1447,7 +1472,9 @@ case 'about':
 }
 
 function App() {
-  const [visitorAlias] = useState(() => generateVisitorAlias())
+const [visitorAlias, setVisitorAlias] = useState(
+  () => generateVisitorAlias(),
+)
 
   const [startupPhase, setStartupPhase] =
   useState<StartupPhase>('booting')
@@ -1602,6 +1629,39 @@ useEffect(() => {
       if (commandResult.clear) {
         setTerminalEntries([])
         setCommandInput('')
+        setCommandHistoryIndex(null)
+        entryIdRef.current = 0
+        return
+      }
+
+      if (commandResult.reset) {
+        setTerminalEntries([])
+        setCurrentPath([])
+        setCommandInput('')
+        setCommandHistoryIndex(null)
+        entryIdRef.current = 0
+        return
+      }
+
+      if (commandResult.reboot) {
+        const newVisitorAlias = generateVisitorAlias()
+
+        setVisitorAlias(newVisitorAlias)
+        visitorAliasRef.current = newVisitorAlias
+
+        setTerminalEntries([])
+        setCurrentPath([])
+        currentPathRef.current = []
+
+        setCommandInput('')
+        setCommandHistory([])
+        commandHistoryRef.current = []
+        setCommandHistoryIndex(null)
+
+        setTypedIntroduction('')
+        setStartupPhase('booting')
+
+        entryIdRef.current = 0
         return
       }
 
