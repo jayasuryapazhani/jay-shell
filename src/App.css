@@ -669,6 +669,102 @@
   gap: 10px;
 }
 
+.terminal__projects-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    minmax(0, 1fr)
+  );
+  gap: 16px;
+}
+
+.terminal__project-card {
+  display: flex;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #30363d;
+  border-radius: 7px;
+  background: #101314;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.terminal__project-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.terminal__project-card-title {
+  color: #70a5ff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.terminal__project-card-category {
+  margin-top: 3px;
+  color: #9ba3af;
+  font-size: 12px;
+}
+
+.terminal__project-status {
+  flex-shrink: 0;
+  padding: 3px 7px;
+  border: 1px solid #2d4640;
+  border-radius: 999px;
+  background: rgb(74 242 161 / 5%);
+  color: #4af2a1;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.terminal__project-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.terminal__project-actions {
+  display: flex;
+  margin-top: auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.terminal__project-action {
+  display: inline-flex;
+  padding: 5px 9px;
+  border: 1px solid #405054;
+  border-radius: 4px;
+  background: transparent;
+  color: #b9c5c7;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+.terminal__project-action:hover,
+.terminal__project-action:focus-visible {
+  border-color: #4af2a1;
+  color: #4af2a1;
+  text-decoration: none;
+}
+
+.terminal__project-action:focus-visible {
+  outline: 1px solid #70a5ff;
+  outline-offset: 3px;
+}
+
+.terminal__tag--muted {
+  border-color: #343b3e;
+  background: transparent;
+  color: #788488;
+}
+
+
 @media (max-width: 1050px) {
   .terminal__workspace--ready {
     grid-template-columns: 1fr;
@@ -687,6 +783,10 @@
     );
   }
 
+  .terminal__projects-grid {
+  grid-template-columns: 1fr;
+}
+
   .terminal__quick-link:nth-child(odd) {
     border-right: 1px solid #252b2e;
   }
@@ -703,6 +803,24 @@
   min-height: calc(100vh - 24px);
 }
 
+
+.terminal__project-card {
+  padding: 13px;
+}
+
+.terminal__project-card-header {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.terminal__project-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.terminal__project-action {
+  justify-content: center;
+}
   .terminal__header {
     min-height: 40px;
   }

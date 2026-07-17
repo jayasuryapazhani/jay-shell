@@ -25,9 +25,12 @@ import { PORTFOLIO_CONFIG } from './config/portfolio'
 import { profile } from './data/profile'
 
 import {
+  getAllProjects,
   getProjectByPath,
   type ProjectDetails,
 } from './data/projects'
+
+
 import { getDirectoryByPath } from './data/virtualFileSystem'
 import type {
   CommandResult,
@@ -957,6 +960,136 @@ const getResumeOutput = (): ReactNode => (
     </section>
   </div>
 )
+
+const getProjectsOutput = (
+  onRunCommand: CommandRunner,
+): ReactNode => {
+  const projects = getAllProjects()
+
+  return (
+    <div className="terminal__result terminal__portfolio-output">
+      <div className="terminal__content-heading">
+        <p className="terminal__section-title">
+          Projects
+        </p>
+
+        <p className="terminal__content-description">
+          Selected software-engineering projects covering
+          full-stack development, browser extensions, backend APIs,
+          testing, automation, and developer tooling.
+        </p>
+      </div>
+
+      <div className="terminal__projects-grid">
+        {projects.map((project) => {
+          const projectDirectory =
+            `${PORTFOLIO_CONFIG.homeDirectory}/projects/` +
+            project.slug
+
+          return (
+            <article
+              className="terminal__project-card"
+              key={project.slug}
+            >
+              <header className="terminal__project-card-header">
+                <div>
+                  <p className="terminal__project-card-title">
+                    {project.name}
+                  </p>
+
+                  <p className="terminal__project-card-category">
+                    {project.category}
+                  </p>
+                </div>
+
+                <span className="terminal__project-status">
+                  {project.status}
+                </span>
+              </header>
+
+              <div className="terminal__project-summary">
+                {project.summary.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+
+              <div className="terminal__tag-list">
+                {project.stack.slice(0, 7).map((technology) => (
+                  <span
+                    className="terminal__tag"
+                    key={technology}
+                  >
+                    {technology}
+                  </span>
+                ))}
+
+                {project.stack.length > 7 && (
+                  <span className="terminal__tag terminal__tag--muted">
+                    +{project.stack.length - 7} more
+                  </span>
+                )}
+              </div>
+
+              <div className="terminal__project-actions">
+                <TerminalAction
+                  command={`cd ${projectDirectory}`}
+                  onRunCommand={onRunCommand}
+                  className="terminal__project-action"
+                >
+                  Open in Terminal
+                </TerminalAction>
+
+                {project.githubUrl && (
+                  <a
+                    className="terminal__project-action"
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) =>
+                      event.stopPropagation()
+                    }
+                  >
+                    GitHub
+                  </a>
+                )}
+
+                {project.demoUrl && (
+                  <a
+                    className="terminal__project-action"
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) =>
+                      event.stopPropagation()
+                    }
+                  >
+                    Live Demo
+                  </a>
+                )}
+
+                {project.storeUrl && (
+                  <a
+                    className="terminal__project-action"
+                    href={project.storeUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) =>
+                      event.stopPropagation()
+                    }
+                  >
+                    Chrome Store
+                  </a>
+                )}
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+
 const executeCommand = (
   commandInput: string,
   visitorAlias: string,
@@ -977,15 +1110,24 @@ const executeCommand = (
         ),
       }
 
-    case 'info':
-      return {
-        output: currentProject
-          ? getProjectOverviewOutput(currentProject)
-          : getDirectoryInfoOutput(
-              currentPath,
-              onRunCommand,
-            ),
-      }
+      case 'info':
+        if (
+          currentPath.length === 1 &&
+          currentPath[0] === 'projects'
+        ) {
+          return {
+            output: getProjectsOutput(onRunCommand),
+          }
+        }
+
+        return {
+          output: currentProject
+            ? getProjectOverviewOutput(currentProject)
+            : getDirectoryInfoOutput(
+                currentPath,
+                onRunCommand,
+              ),
+        }
 
     case 'ls':
       return {
@@ -1074,13 +1216,10 @@ case 'about':
             output: getEducationOutput(),
           }
 
-    case 'projects':
-      return {
-        output: getDirectoryInfoOutput(
-          ['projects'],
-          onRunCommand,
-        ),
-      }
+              case 'projects':
+                return {
+                  output: getProjectsOutput(onRunCommand),
+                }
 
     case 'contact':
       return {

@@ -258,3 +258,6 @@ export const getProjectByPath = (
 
   return projectsBySlug[path[1]] ?? null
 }
+
+export const getAllProjects = (): ProjectDetails[] =>
+  Object.values(projectsBySlug)
