@@ -1789,9 +1789,16 @@ const focusCommandInput = () => {
 
   return (
     <main className="app-shell">
+      <a
+        className="skip-link"
+        href="#terminal-main"
+      >
+        Skip to terminal content
+      </a>
       <section
         className="terminal"
         aria-label="JayShell interactive terminal portfolio"
+        aria-busy={startupPhase !== 'ready'}
       >
           <TerminalHeader
             title={
@@ -1831,7 +1838,13 @@ const focusCommandInput = () => {
                 .filter(Boolean)
                 .join(' ')}
             >
-              <div className="terminal__main">
+              <div
+                id="terminal-main"
+                className="terminal__main"
+                role="region"
+                aria-label="Terminal session and command output"
+                tabIndex={-1}
+              >
                 <div className="terminal__session">
                   <TerminalStartup
                     phase={startupPhase}

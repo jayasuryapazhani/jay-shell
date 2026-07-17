@@ -468,4 +468,36 @@ describe('App terminal integration', () => {
       ),
     ).toBeInTheDocument()
   })
+
+  it('provides a skip link to the terminal region', async () => {
+  const user = userEvent.setup()
+
+  const { input } = await renderReadyApp()
+
+  const skipLink = screen.getByRole('link', {
+    name: 'Skip to terminal content',
+  })
+
+  expect(skipLink).toHaveAttribute(
+    'href',
+    '#terminal-main',
+  )
+
+  const terminalRegion = screen.getByRole(
+    'region',
+    {
+      name: 'Terminal session and command output',
+    },
+  )
+
+  expect(terminalRegion).toHaveAttribute(
+    'id',
+    'terminal-main',
+  )
+
+  input.blur()
+  await user.tab()
+
+  expect(skipLink).toHaveFocus()
+})
 })
