@@ -982,7 +982,7 @@ const getResumeOutput = (): ReactNode => (
       </p>
 
       <p className="terminal__content-note">
-        Software Engineer | MEng Software Engineering Student
+        {profile.headline}
       </p>
 
       <div className="terminal__resume-actions">
