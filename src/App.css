@@ -114,15 +114,6 @@
   font-weight: 600;
 }
 
-.name-prompt__line {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.name-prompt__line label {
-  flex-shrink: 0;
-}
 
 .terminal__input {
   padding: 0;
@@ -134,17 +125,8 @@
   font: inherit;
 }
 
-.terminal__input--name {
-  width: min(400px, 100%);
-  min-width: 120px;
-}
-
 .terminal__session {
   width: 100%;
-}
-
-.terminal__submitted-name {
-  margin-bottom: 20px;
 }
 
 .terminal__welcome {
@@ -324,6 +306,180 @@
   content: '-';
 }
 
+.terminal__startup {
+  min-height: 150px;
+  margin-bottom: 20px;
+}
+
+.terminal__boot {
+  display: flex;
+  min-height: 120px;
+  align-items: flex-start;
+}
+
+.terminal__boot-cursor {
+  color: #f2f2f2;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+  animation: terminal-blink 700ms steps(1) infinite;
+}
+
+.terminal__typed-introduction {
+  max-width: 950px;
+}
+
+.terminal__typed-text {
+  min-height: 76px;
+  color: #f2f2f2;
+  white-space: pre-line;
+}
+
+.terminal__typing-cursor {
+  margin-left: 2px;
+  color: #f2f2f2;
+  font-weight: 900;
+  animation: terminal-blink 700ms steps(1) infinite;
+}
+
+.terminal__intro-actions {
+  display: flex;
+  margin-top: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.terminal__action--primary {
+  padding: 6px 12px;
+  border: 1px solid #4af2a1;
+  border-radius: 4px;
+  color: #4af2a1;
+}
+
+.terminal__action--primary::before {
+  content: '[ ';
+}
+
+.terminal__action--primary::after {
+  content: ' ]';
+}
+
+.terminal__action--primary:hover {
+  background: rgb(74 242 161 / 8%);
+  color: #7affbd;
+  text-decoration: none;
+}
+
+.terminal__intro-hint {
+  color: #9ba3af;
+  font-size: 13px;
+}
+@keyframes terminal-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+
+.terminal__profile {
+  width: min(1050px, 100%);
+}
+
+.terminal__profile-section {
+  display: flex;
+  margin-bottom: 22px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.terminal__profile-section:last-child {
+  margin-bottom: 0;
+}
+
+.terminal__profile-name {
+  color: #4af2a1;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.terminal__profile-headline {
+  margin-bottom: 8px;
+  color: #f5d76e;
+  font-weight: 600;
+}
+
+.terminal__profile-label {
+  color: #70a5ff;
+  font-weight: 600;
+}
+
+.terminal__education {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal__education .terminal__detail-list {
+  margin-top: 5px;
+}
+
+.terminal__skills-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(300px, 1fr)
+  );
+  gap: 12px 28px;
+}
+
+.terminal__skill-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.terminal__resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.terminal__resume-action {
+  display: inline-flex;
+  padding: 6px 12px;
+  border: 1px solid #4af2a1;
+  border-radius: 4px;
+  color: #4af2a1;
+  text-decoration: none;
+}
+
+.terminal__resume-action::before {
+  content: '[ ';
+}
+
+.terminal__resume-action::after {
+  content: ' ]';
+}
+
+.terminal__resume-action:hover,
+.terminal__resume-action:focus-visible {
+  background: rgb(74 242 161 / 8%);
+  color: #7affbd;
+}
+
+.terminal__resume-action:focus-visible {
+  outline: 1px solid #70a5ff;
+  outline-offset: 3px;
+}
+
+
 
 @media (max-width: 700px) {
   .app-shell {
@@ -344,13 +500,14 @@
     font-size: 13px;
   }
 
-  .name-prompt__line {
-    flex-wrap: wrap;
-  }
+  .terminal__skills-grid {
+  grid-template-columns: 1fr;
+}
 
-  .terminal__input--name {
-    min-width: 160px;
-  }
+.terminal__resume-actions {
+  flex-direction: column;
+  align-items: flex-start;
+}
 
   .terminal__help-list p {
     grid-template-columns: 90px 1fr;

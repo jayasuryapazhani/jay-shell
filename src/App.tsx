@@ -10,6 +10,9 @@ import type {
   ReactNode,
 } from 'react'
 import { PORTFOLIO_CONFIG } from './config/portfolio'
+
+import { profile } from './data/profile'
+
 import {
   getProjectByPath,
   type ProjectDetails,
@@ -28,8 +31,8 @@ import {
   getAutocompleteValue,
   resolveDirectoryPath,
 } from './utils/terminal'
+import { generateVisitorAlias } from './utils/visitorAlias'
 import './App.css'
-
 
 type TerminalActionProps = {
   command: string
@@ -44,6 +47,8 @@ type HelpActionProps = {
   description: string
   onRunCommand: CommandRunner
 }
+
+type StartupPhase = 'booting' | 'typing' | 'ready'
 
 function TerminalAction({
   command,
@@ -88,8 +93,6 @@ function HelpAction({
     </p>
   )
 }
-
-
 
 const getDirectoryInfoOutput = (
   path: string[],
@@ -152,7 +155,7 @@ const getListOutput = (
   path: string[],
   onRunCommand: CommandRunner,
 ): ReactNode => {
-    const directory = getDirectoryByPath(path)
+  const directory = getDirectoryByPath(path)
 
   if (!directory) {
     return (
@@ -179,24 +182,23 @@ const getListOutput = (
   }
 
   return (
-        <div className="terminal__directory-list">
-          {childDirectories.map((directoryName) => (
-            <TerminalAction
-              key={directoryName}
-              command={createDirectoryCommand(
-                path,
-                directoryName,
-              )}
-              onRunCommand={onRunCommand}
-              className="terminal__action--directory"
-            >
-              {directoryName}/
-            </TerminalAction>
-          ))}
-        </div>
+    <div className="terminal__directory-list">
+      {childDirectories.map((directoryName) => (
+        <TerminalAction
+          key={directoryName}
+          command={createDirectoryCommand(
+            path,
+            directoryName,
+          )}
+          onRunCommand={onRunCommand}
+          className="terminal__action--directory"
+        >
+          {directoryName}/
+        </TerminalAction>
+      ))}
+    </div>
   )
 }
-
 
 const getProjectOverviewOutput = (
   project: ProjectDetails,
@@ -302,18 +304,209 @@ const getExternalProjectLinkOutput = (
 )
 
 
+const getAboutOutput = (): ReactNode => (
+  <div className="terminal__result terminal__profile">
+    <section className="terminal__profile-section">
+      <p className="terminal__profile-name">
+        {profile.name}
+      </p>
+
+      <p className="terminal__profile-headline">
+        {profile.headline}
+      </p>
+
+      {profile.summary.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Career Focus
+      </p>
+
+      <div className="terminal__detail-list">
+        {profile.focusAreas.map((area) => (
+          <p
+            className="terminal__detail-item"
+            key={area}
+          >
+            {area}
+          </p>
+        ))}
+      </div>
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Education
+      </p>
+
+      {profile.education.map((education) => (
+        <div
+          className="terminal__education"
+          key={education.institution}
+        >
+          <p className="terminal__profile-label">
+            {education.program}
+          </p>
+
+          <p>{education.institution}</p>
+          <p className="terminal__muted">
+            {education.location}
+          </p>
+
+          <div className="terminal__detail-list">
+            {education.details.map((detail) => (
+              <p
+                className="terminal__detail-item"
+                key={detail}
+              >
+                {detail}
+              </p>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Professional Experience
+      </p>
+
+      <div className="terminal__detail-list">
+        {profile.professionalExperience.map((item) => (
+          <p
+            className="terminal__detail-item"
+            key={item}
+          >
+            {item}
+          </p>
+        ))}
+      </div>
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Hands-on Experience
+      </p>
+
+      <div className="terminal__detail-list">
+        {profile.handsOnExperience.map((item) => (
+          <p
+            className="terminal__detail-item"
+            key={item}
+          >
+            {item}
+          </p>
+        ))}
+      </div>
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Technical Skills
+      </p>
+
+      <div className="terminal__skills-grid">
+        {profile.skills.map((skillGroup) => (
+          <div
+            className="terminal__skill-group"
+            key={skillGroup.category}
+          >
+            <p className="terminal__profile-label">
+              {skillGroup.category}
+            </p>
+
+            <p>{skillGroup.skills.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Contact
+      </p>
+
+      <p>
+        Email:{' '}
+        <a
+          className="terminal__link"
+          href={`mailto:${PORTFOLIO_CONFIG.contactEmail}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {PORTFOLIO_CONFIG.contactEmail}
+        </a>
+      </p>
+
+      <p>
+        LinkedIn:{' '}
+        <a
+          className="terminal__link"
+          href={PORTFOLIO_CONFIG.linkedInUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          linkedin.com/in/jayasurya-pazhani
+        </a>
+      </p>
+
+      <p>
+        GitHub:{' '}
+        <a
+          className="terminal__link"
+          href={PORTFOLIO_CONFIG.githubUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          github.com/jayasuryapazhani
+        </a>
+      </p>
+    </section>
+
+    <section className="terminal__profile-section">
+      <p className="terminal__section-title">
+        Resume
+      </p>
+
+      <div className="terminal__resume-actions">
+        <a
+          className="terminal__resume-action"
+          href={PORTFOLIO_CONFIG.resumeUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          View Resume
+        </a>
+
+        <a
+          className="terminal__resume-action"
+          href={PORTFOLIO_CONFIG.resumeUrl}
+          download="Jayasurya-Pazhani-Resume.pdf"
+          onClick={(event) => event.stopPropagation()}
+        >
+          Download Resume
+        </a>
+      </div>
+    </section>
+  </div>
+)
+
+
 const getHelpOutput = (
   path: string[],
   onRunCommand: CommandRunner,
 ): ReactNode => {
   const directory = getDirectoryByPath(path)
-
   const currentPath = formatVirtualPath(path)
-
   const childDirectories = Object.keys(
     directory?.children ?? {},
   )
-
   const currentSection = path[0]
   const currentProject = getProjectByPath(path)
 
@@ -387,6 +580,70 @@ const getHelpOutput = (
         />
       </div>
 
+      {currentProject && (
+        <>
+          <p className="terminal__section-title">
+            Project commands
+          </p>
+
+          <div className="terminal__help-list">
+            <HelpAction
+              command="stack"
+              description="Display the project technology stack"
+              onRunCommand={onRunCommand}
+            />
+
+            <HelpAction
+              command="features"
+              description="Display key project features"
+              onRunCommand={onRunCommand}
+            />
+
+            <HelpAction
+              command="testing"
+              description="Display testing and validation details"
+              onRunCommand={onRunCommand}
+            />
+
+            <HelpAction
+              command="architecture"
+              description="Display the project architecture"
+              onRunCommand={onRunCommand}
+            />
+
+            <HelpAction
+              command="lessons"
+              description="Display lessons learned"
+              onRunCommand={onRunCommand}
+            />
+
+            {currentProject.githubUrl && (
+              <HelpAction
+                command="github"
+                description="Open the GitHub repository"
+                onRunCommand={onRunCommand}
+              />
+            )}
+
+            {currentProject.demoUrl && (
+              <HelpAction
+                command="demo"
+                description="Open the live application"
+                onRunCommand={onRunCommand}
+              />
+            )}
+
+            {currentProject.storeUrl && (
+              <HelpAction
+                command="store"
+                description="Open the Chrome Web Store listing"
+                onRunCommand={onRunCommand}
+              />
+            )}
+          </div>
+        </>
+      )}
+
       {path.length === 0 && (
         <>
           <p className="terminal__section-title">
@@ -429,7 +686,11 @@ const getHelpOutput = (
               description="Display contact information"
               onRunCommand={onRunCommand}
             />
-
+            <HelpAction
+              command="resume"
+              description="View or download the resume"
+              onRunCommand={onRunCommand}
+            />
             <HelpAction
               command="socials"
               description="Display LinkedIn and GitHub"
@@ -454,73 +715,10 @@ const getHelpOutput = (
           </div>
         </>
       )}
-      {currentProject && (
-  <>
-    <p className="terminal__section-title">
-      Project commands
-    </p>
-
-    <div className="terminal__help-list">
-      <HelpAction
-        command="stack"
-        description="Display the project technology stack"
-        onRunCommand={onRunCommand}
-      />
-
-      <HelpAction
-        command="features"
-        description="Display key project features"
-        onRunCommand={onRunCommand}
-      />
-
-      <HelpAction
-        command="testing"
-        description="Display testing and validation details"
-        onRunCommand={onRunCommand}
-      />
-
-      <HelpAction
-        command="architecture"
-        description="Display the project architecture"
-        onRunCommand={onRunCommand}
-      />
-
-      <HelpAction
-        command="lessons"
-        description="Display lessons learned"
-        onRunCommand={onRunCommand}
-      />
-
-      {currentProject.githubUrl && (
-        <HelpAction
-          command="github"
-          description="Open the GitHub repository"
-          onRunCommand={onRunCommand}
-        />
-      )}
-
-      {currentProject.demoUrl && (
-        <HelpAction
-          command="demo"
-          description="Open the live application"
-          onRunCommand={onRunCommand}
-        />
-      )}
-
-      {currentProject.storeUrl && (
-        <HelpAction
-          command="store"
-          description="Open the Chrome Web Store listing"
-          onRunCommand={onRunCommand}
-        />
-      )}
     </div>
-  </>
-)}
-    </div>
-    
   )
 }
+
 const getContactOutput = (): ReactNode => (
   <div className="terminal__result">
     <p className="terminal__section-title">Contact</p>
@@ -571,7 +769,7 @@ const getSocialsOutput = (): ReactNode => (
 
 const executeCommand = (
   commandInput: string,
-  visitorName: string,
+  visitorAlias: string,
   currentPath: string[],
   onRunCommand: CommandRunner,
 ): CommandResult => {
@@ -583,27 +781,28 @@ const executeCommand = (
   switch (commandName) {
     case 'help':
       return {
-                  output: getHelpOutput(
-            currentPath,
-            onRunCommand,
-          ),
+        output: getHelpOutput(
+          currentPath,
+          onRunCommand,
+        ),
       }
-      case 'info':
-        return {
-          output: currentProject
-            ? getProjectOverviewOutput(currentProject)
-            : getDirectoryInfoOutput(
-                currentPath,
-                onRunCommand,
-              ),
-        }
 
-    case 'ls':
+    case 'info':
       return {
-            output: getListOutput(
+        output: currentProject
+          ? getProjectOverviewOutput(currentProject)
+          : getDirectoryInfoOutput(
               currentPath,
               onRunCommand,
             ),
+      }
+
+    case 'ls':
+      return {
+        output: getListOutput(
+          currentPath,
+          onRunCommand,
+        ),
       }
 
     case 'pwd':
@@ -619,9 +818,9 @@ const executeCommand = (
       return {
         output: (
           <div className="terminal__result">
-            <p>{createTerminalUsername(visitorName)}</p>
+            <p>{createTerminalUsername(visitorAlias)}</p>
             <p>
-              Current session visitor: {visitorName}
+              Current session alias: {visitorAlias}
             </p>
           </div>
         ),
@@ -665,45 +864,42 @@ const executeCommand = (
       }
     }
 
-  case 'about':
-    return {
-      output: getDirectoryInfoOutput(
-        ['about'],
-        onRunCommand,
-      ),
-    }
+case 'about':
+  return {
+    output: getAboutOutput(),
+  }
 
-  case 'skills':
-    return {
-      output: getDirectoryInfoOutput(
-        ['skills'],
-        onRunCommand,
-      ),
-    }
+    case 'skills':
+      return {
+        output: getDirectoryInfoOutput(
+          ['skills'],
+          onRunCommand,
+        ),
+      }
 
-  case 'experience':
-    return {
-      output: getDirectoryInfoOutput(
-        ['experience'],
-        onRunCommand,
-      ),
-    }
+    case 'experience':
+      return {
+        output: getDirectoryInfoOutput(
+          ['experience'],
+          onRunCommand,
+        ),
+      }
 
-  case 'education':
-    return {
-      output: getDirectoryInfoOutput(
-        ['education'],
-        onRunCommand,
-      ),
-    }
+    case 'education':
+      return {
+        output: getDirectoryInfoOutput(
+          ['education'],
+          onRunCommand,
+        ),
+      }
 
-  case 'projects':
-    return {
-      output: getDirectoryInfoOutput(
-        ['projects'],
-        onRunCommand,
-      ),
-    }
+    case 'projects':
+      return {
+        output: getDirectoryInfoOutput(
+          ['projects'],
+          onRunCommand,
+        ),
+      }
 
     case 'contact':
       return {
@@ -714,127 +910,163 @@ const executeCommand = (
       return {
         output: getSocialsOutput(),
       }
-case 'stack':
+case 'resume':
   return {
-    output: currentProject
-      ? getProjectDetailOutput(
-          `${currentProject.name}: Technology Stack`,
-          currentProject.stack,
-        )
-      : getProjectCommandError('stack'),
-  }
+    output: (
+      <div className="terminal__result">
+        <p className="terminal__section-title">
+          Resume
+        </p>
 
-case 'features':
-  return {
-    output: currentProject
-      ? getProjectDetailOutput(
-          `${currentProject.name}: Features`,
-          currentProject.features,
-        )
-      : getProjectCommandError('features'),
-  }
+        <div className="terminal__resume-actions">
+          <a
+            className="terminal__resume-action"
+            href={PORTFOLIO_CONFIG.resumeUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            View Resume
+          </a>
 
-case 'testing':
-  return {
-    output: currentProject
-      ? getProjectDetailOutput(
-          `${currentProject.name}: Testing`,
-          currentProject.testing,
-        )
-      : getProjectCommandError('testing'),
-  }
-
-case 'architecture':
-  return {
-    output: currentProject
-      ? getProjectDetailOutput(
-          `${currentProject.name}: Architecture`,
-          currentProject.architecture,
-        )
-      : getProjectCommandError('architecture'),
-  }
-
-case 'lessons':
-  return {
-    output: currentProject
-      ? getProjectDetailOutput(
-          `${currentProject.name}: Lessons Learned`,
-          currentProject.lessons,
-        )
-      : getProjectCommandError('lessons'),
-  }
-
-case 'github':
-  if (!currentProject) {
-    return {
-      output: getProjectCommandError('github'),
-    }
-  }
-
-  if (!currentProject.githubUrl) {
-    return {
-      output: getUnavailableProjectLinkOutput(
-        currentProject,
-        'GitHub repository',
-      ),
-    }
-  }
-
-  return {
-    output: getExternalProjectLinkOutput(
-      `${currentProject.name}: GitHub`,
-      currentProject.githubUrl,
+          <a
+            className="terminal__resume-action"
+            href={PORTFOLIO_CONFIG.resumeUrl}
+            download="Jayasurya-Pazhani-Resume.pdf"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            Download Resume
+          </a>
+        </div>
+      </div>
     ),
-    externalUrl: currentProject.githubUrl,
   }
+    case 'stack':
+      return {
+        output: currentProject
+          ? getProjectDetailOutput(
+              `${currentProject.name}: Technology Stack`,
+              currentProject.stack,
+            )
+          : getProjectCommandError('stack'),
+      }
 
-case 'demo':
-  if (!currentProject) {
-    return {
-      output: getProjectCommandError('demo'),
-    }
-  }
+    case 'features':
+      return {
+        output: currentProject
+          ? getProjectDetailOutput(
+              `${currentProject.name}: Features`,
+              currentProject.features,
+            )
+          : getProjectCommandError('features'),
+      }
 
-  if (!currentProject.demoUrl) {
-    return {
-      output: getUnavailableProjectLinkOutput(
-        currentProject,
-        'live demo',
-      ),
-    }
-  }
+    case 'testing':
+      return {
+        output: currentProject
+          ? getProjectDetailOutput(
+              `${currentProject.name}: Testing`,
+              currentProject.testing,
+            )
+          : getProjectCommandError('testing'),
+      }
 
-  return {
-    output: getExternalProjectLinkOutput(
-      `${currentProject.name}: Live Demo`,
-      currentProject.demoUrl,
-    ),
-    externalUrl: currentProject.demoUrl,
-  }
+    case 'architecture':
+      return {
+        output: currentProject
+          ? getProjectDetailOutput(
+              `${currentProject.name}: Architecture`,
+              currentProject.architecture,
+            )
+          : getProjectCommandError('architecture'),
+      }
 
-case 'store':
-  if (!currentProject) {
-    return {
-      output: getProjectCommandError('store'),
-    }
-  }
+    case 'lessons':
+      return {
+        output: currentProject
+          ? getProjectDetailOutput(
+              `${currentProject.name}: Lessons Learned`,
+              currentProject.lessons,
+            )
+          : getProjectCommandError('lessons'),
+      }
 
-  if (!currentProject.storeUrl) {
-    return {
-      output: getUnavailableProjectLinkOutput(
-        currentProject,
-        'store',
-      ),
-    }
-  }
+    case 'github':
+      if (!currentProject) {
+        return {
+          output: getProjectCommandError('github'),
+        }
+      }
 
-  return {
-    output: getExternalProjectLinkOutput(
-      `${currentProject.name}: Chrome Web Store`,
-      currentProject.storeUrl,
-    ),
-    externalUrl: currentProject.storeUrl,
-  }
+      if (!currentProject.githubUrl) {
+        return {
+          output: getUnavailableProjectLinkOutput(
+            currentProject,
+            'GitHub repository',
+          ),
+        }
+      }
+
+      return {
+        output: getExternalProjectLinkOutput(
+          `${currentProject.name}: GitHub`,
+          currentProject.githubUrl,
+        ),
+        externalUrl: currentProject.githubUrl,
+      }
+
+    case 'demo':
+      if (!currentProject) {
+        return {
+          output: getProjectCommandError('demo'),
+        }
+      }
+
+      if (!currentProject.demoUrl) {
+        return {
+          output: getUnavailableProjectLinkOutput(
+            currentProject,
+            'live demo',
+          ),
+        }
+      }
+
+      return {
+        output: getExternalProjectLinkOutput(
+          `${currentProject.name}: Live Demo`,
+          currentProject.demoUrl,
+        ),
+        externalUrl: currentProject.demoUrl,
+      }
+
+    case 'store':
+      if (!currentProject) {
+        return {
+          output: getProjectCommandError('store'),
+        }
+      }
+
+      if (!currentProject.storeUrl) {
+        return {
+          output: getUnavailableProjectLinkOutput(
+            currentProject,
+            'store',
+          ),
+        }
+      }
+
+      return {
+        output: getExternalProjectLinkOutput(
+          `${currentProject.name}: Chrome Web Store`,
+          currentProject.storeUrl,
+        ),
+        externalUrl: currentProject.storeUrl,
+      }
+
     case 'clear':
       return {
         output: null,
@@ -863,19 +1095,24 @@ case 'store':
 }
 
 function App() {
-  const [nameInput, setNameInput] = useState('')
-  const [visitorName, setVisitorName] =
-    useState<string | null>(null)
-  const [commandInput, setCommandInput] = useState('')
-  const [commandHistory, setCommandHistory] = useState<string[]>(
-  [],
-)
+  const [visitorAlias] = useState(() => generateVisitorAlias())
 
-const [commandHistoryIndex, setCommandHistoryIndex] = useState<
-  number | null
->(null)
-  const [currentPath, setCurrentPath] =
-    useState<string[]>([])
+  const [startupPhase, setStartupPhase] =
+  useState<StartupPhase>('booting')
+
+const [typedIntroduction, setTypedIntroduction] =
+  useState('')
+
+
+  const [commandInput, setCommandInput] = useState('')
+  const [commandHistory, setCommandHistory] = useState<
+    string[]
+  >([])
+  const [
+    commandHistoryIndex,
+    setCommandHistoryIndex,
+  ] = useState<number | null>(null)
+  const [currentPath, setCurrentPath] = useState<string[]>([])
   const [terminalEntries, setTerminalEntries] = useState<
     TerminalEntry[]
   >([])
@@ -883,195 +1120,230 @@ const [commandHistoryIndex, setCommandHistoryIndex] = useState<
   const terminalBodyRef = useRef<HTMLDivElement>(null)
   const commandInputRef = useRef<HTMLInputElement>(null)
   const entryIdRef = useRef(0)
-const visitorNameRef = useRef<string | null>(null)
-const currentPathRef = useRef<string[]>([])
-const currentPromptRef = useRef('')
-const commandRunnerRef = useRef<CommandRunner>(() => undefined)
-  const terminalUsername = visitorName
-    ? createTerminalUsername(visitorName)
-    : 'visitor'
+  const visitorAliasRef = useRef(visitorAlias)
+  const currentPathRef = useRef<string[]>([])
+  const currentPromptRef = useRef('')
+  const commandRunnerRef = useRef<CommandRunner>(
+    () => undefined,
+  )
 
-const currentPrompt =
-  `${terminalUsername}@${PORTFOLIO_CONFIG.hostName}:` +
-  `${formatPromptPath(currentPath)}$`
+  const terminalUsername =
+    createTerminalUsername(visitorAlias)
+
+  const currentPrompt =
+    `${terminalUsername}@${PORTFOLIO_CONFIG.hostName}:` +
+    `${formatPromptPath(currentPath)}$`
+
+    const introductionText = [
+  `Hello, ${visitorAlias}.`,
+  `Welcome to ${PORTFOLIO_CONFIG.appName}.`,
+  `Explore the interactive terminal portfolio of ${PORTFOLIO_CONFIG.ownerName}.`,
+    ].join('\n')
 useEffect(() => {
-  visitorNameRef.current = visitorName
-  currentPathRef.current = currentPath
-  currentPromptRef.current = currentPrompt
-}, [visitorName, currentPath, currentPrompt])
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches
+
+  if (prefersReducedMotion) {
+    setTypedIntroduction(introductionText)
+    setStartupPhase('ready')
+    return
+  }
+
+  let characterIndex = 0
+  let typingTimer: number | undefined
+
+  const bootTimer = window.setTimeout(() => {
+    setStartupPhase('typing')
+
+    typingTimer = window.setInterval(() => {
+      characterIndex += 1
+
+      setTypedIntroduction(
+        introductionText.slice(0, characterIndex),
+      )
+
+      if (characterIndex >= introductionText.length) {
+        if (typingTimer !== undefined) {
+          window.clearInterval(typingTimer)
+        }
+
+        setStartupPhase('ready')
+      }
+    }, 28)
+  }, 2000)
+
+  return () => {
+    window.clearTimeout(bootTimer)
+
+    if (typingTimer !== undefined) {
+      window.clearInterval(typingTimer)
+    }
+  }
+}, [introductionText])
+
   useEffect(() => {
-    if (visitorName) {
-      commandInputRef.current?.focus()
-    }
+    visitorAliasRef.current = visitorAlias
+    currentPathRef.current = currentPath
+    currentPromptRef.current = currentPrompt
+  }, [visitorAlias, currentPath, currentPrompt])
 
-    const terminalBody = terminalBodyRef.current
+useEffect(() => {
+  const terminalBody = terminalBodyRef.current
 
-    if (terminalBody) {
-      terminalBody.scrollTop =
-        terminalBody.scrollHeight
-    }
-  }, [visitorName, terminalEntries, currentPath])
+  if (terminalBody) {
+    terminalBody.scrollTop =
+      terminalBody.scrollHeight
+  }
 
-  const handleNameSubmit = (
+  if (startupPhase === 'ready') {
+    commandInputRef.current?.focus()
+  }
+}, [startupPhase, terminalEntries, currentPath])
+
+  const runCommandFromOutput = useCallback(
+    (command: string) => {
+      commandRunnerRef.current(command)
+    },
+    [],
+  )
+
+  const runCommand = useCallback(
+    (rawCommand: string) => {
+      const activeVisitorAlias =
+        visitorAliasRef.current
+      const cleanedCommand = rawCommand.trim()
+
+      if (!cleanedCommand) {
+        return
+      }
+
+      const activePath = currentPathRef.current
+      const activePrompt = currentPromptRef.current
+
+      setCommandHistory((currentHistory) =>
+        [...currentHistory, cleanedCommand].slice(-100),
+      )
+
+      setCommandHistoryIndex(null)
+
+      const commandResult = executeCommand(
+        cleanedCommand,
+        activeVisitorAlias,
+        activePath,
+        runCommandFromOutput,
+      )
+
+      if (commandResult.externalUrl) {
+        window.open(
+          commandResult.externalUrl,
+          '_blank',
+          'noopener,noreferrer',
+        )
+      }
+
+      if (commandResult.clear) {
+        setTerminalEntries([])
+        setCommandInput('')
+        return
+      }
+
+      entryIdRef.current += 1
+
+      const newEntry: TerminalEntry = {
+        id: entryIdRef.current,
+        command: cleanedCommand,
+        prompt: activePrompt,
+        output: commandResult.output,
+      }
+
+      setTerminalEntries((currentEntries) => [
+        ...currentEntries,
+        newEntry,
+      ])
+
+      if (commandResult.nextPath) {
+        setCurrentPath(commandResult.nextPath)
+      }
+
+      setCommandInput('')
+    },
+    [runCommandFromOutput],
+  )
+
+  useEffect(() => {
+    commandRunnerRef.current = runCommand
+  }, [runCommand])
+
+  const handleCommandSubmit = (
     event: FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault()
-
-    const cleanedName = nameInput.trim()
-
-    if (!cleanedName) {
-      return
-    }
-
-    setVisitorName(cleanedName)
-  }
-const handleCommandKeyDown = (
-  event: KeyboardEvent<HTMLInputElement>,
-) => {
-  if (event.key === 'ArrowUp') {
-    event.preventDefault()
-
-    if (commandHistory.length === 0) {
-      return
-    }
-
-    const nextIndex =
-      commandHistoryIndex === null
-        ? commandHistory.length - 1
-        : Math.max(0, commandHistoryIndex - 1)
-
-    setCommandHistoryIndex(nextIndex)
-    setCommandInput(commandHistory[nextIndex])
-
-    return
+    runCommand(commandInput)
   }
 
-  if (event.key === 'ArrowDown') {
-    event.preventDefault()
+  const handleCommandKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === 'ArrowUp') {
+      event.preventDefault()
 
-    if (commandHistoryIndex === null) {
+      if (commandHistory.length === 0) {
+        return
+      }
+
+      const nextIndex =
+        commandHistoryIndex === null
+          ? commandHistory.length - 1
+          : Math.max(0, commandHistoryIndex - 1)
+
+      setCommandHistoryIndex(nextIndex)
+      setCommandInput(commandHistory[nextIndex])
+
       return
     }
 
-    const nextIndex = commandHistoryIndex + 1
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
 
-    if (nextIndex >= commandHistory.length) {
-      setCommandHistoryIndex(null)
-      setCommandInput('')
+      if (commandHistoryIndex === null) {
+        return
+      }
+
+      const nextIndex = commandHistoryIndex + 1
+
+      if (nextIndex >= commandHistory.length) {
+        setCommandHistoryIndex(null)
+        setCommandInput('')
+        return
+      }
+
+      setCommandHistoryIndex(nextIndex)
+      setCommandInput(commandHistory[nextIndex])
+
       return
     }
 
-    setCommandHistoryIndex(nextIndex)
-    setCommandInput(commandHistory[nextIndex])
+    if (event.key === 'Tab') {
+      event.preventDefault()
 
-    return
+      const autocompleteValue = getAutocompleteValue(
+        commandInput,
+        currentPath,
+      )
+
+      if (autocompleteValue) {
+        setCommandInput(autocompleteValue)
+        setCommandHistoryIndex(null)
+      }
+    }
   }
 
-  if (event.key === 'Tab') {
-    event.preventDefault()
-
-    const autocompleteValue = getAutocompleteValue(
-      commandInput,
-      currentPath,
-    )
-
-    if (autocompleteValue) {
-      setCommandInput(autocompleteValue)
-      setCommandHistoryIndex(null)
-    }
+const focusCommandInput = () => {
+  if (startupPhase === 'ready') {
+    commandInputRef.current?.focus()
   }
 }
-
-
-const runCommandFromOutput = useCallback(
-  (command: string) => {
-    commandRunnerRef.current(command)
-  },
-  [],
-)
-
-const runCommand = useCallback(
-  (rawCommand: string) => {
-    const activeVisitorName = visitorNameRef.current
-
-    if (!activeVisitorName) {
-      return
-    }
-
-    const cleanedCommand = rawCommand.trim()
-
-    if (!cleanedCommand) {
-      return
-    }
-
-    const activePath = currentPathRef.current
-    const activePrompt = currentPromptRef.current
-
-    setCommandHistory((currentHistory) => [
-      ...currentHistory,
-      cleanedCommand,
-    ].slice(-100))
-
-    setCommandHistoryIndex(null)
-
-    const commandResult = executeCommand(
-      cleanedCommand,
-      activeVisitorName,
-      activePath,
-      runCommandFromOutput,
-    )
-if (commandResult.externalUrl) {
-  window.open(
-    commandResult.externalUrl,
-    '_blank',
-    'noopener,noreferrer',
-  )
-}
-    if (commandResult.clear) {
-      setTerminalEntries([])
-      setCommandInput('')
-      return
-    }
-
-    entryIdRef.current += 1
-
-    const newEntry: TerminalEntry = {
-      id: entryIdRef.current,
-      command: cleanedCommand,
-      prompt: activePrompt,
-      output: commandResult.output,
-    }
-
-    setTerminalEntries((currentEntries) => [
-      ...currentEntries,
-      newEntry,
-    ])
-
-    if (commandResult.nextPath) {
-      setCurrentPath(commandResult.nextPath)
-    }
-
-    setCommandInput('')
-  },
-  [runCommandFromOutput],
-)
-
-useEffect(() => {
-  commandRunnerRef.current = runCommand
-}, [runCommand])
-
-
-const handleCommandSubmit = (
-  event: FormEvent<HTMLFormElement>,
-) => {
-  event.preventDefault()
-  runCommand(commandInput)
-}
-  const focusCommandInput = () => {
-    if (visitorName) {
-      commandInputRef.current?.focus()
-    }
-  }
 
   return (
     <main className="app-shell">
@@ -1090,7 +1362,8 @@ const handleCommandSubmit = (
           </div>
 
           <p className="terminal__title">
-            {terminalUsername}@{PORTFOLIO_CONFIG.hostName}:
+            {terminalUsername}@
+            {PORTFOLIO_CONFIG.hostName}:
             {formatPromptPath(currentPath)}
           </p>
 
@@ -1107,8 +1380,8 @@ const handleCommandSubmit = (
         >
           <div className="terminal__intro">
             <p className="terminal__brand">
-            {PORTFOLIO_CONFIG.appName.toUpperCase()} v
-            {PORTFOLIO_CONFIG.version}
+              {PORTFOLIO_CONFIG.appName.toUpperCase()} v
+              {PORTFOLIO_CONFIG.version}
             </p>
 
             <p>Interactive terminal portfolio</p>
@@ -1121,123 +1394,120 @@ const handleCommandSubmit = (
             </p>
           </div>
 
-          {visitorName === null ? (
-            <form
-              className="name-prompt"
-              onSubmit={handleNameSubmit}
-              aria-label="Visitor name form"
-            >
-              <div className="name-prompt__line">
-                <label htmlFor="visitor-name">
-                  Enter your name:
-                </label>
-
-                <input
-                  id="visitor-name"
-                  className="terminal__input terminal__input--name"
-                  type="text"
-                  value={nameInput}
-                  onChange={(event) =>
-                    setNameInput(event.target.value)
-                  }
-                  maxLength={40}
-                  autoComplete="off"
-                  autoFocus
-                  spellCheck={false}
-                />
-              </div>
-            </form>
-          ) : (
-            <div className="terminal__session">
-              <p className="terminal__submitted-name">
-                Enter your name: {visitorName}
-              </p>
-
-              <div className="terminal__welcome">
-                <p>
-                  Hello,{' '}
-                  <span className="terminal__highlight">
-                    {visitorName}
-                  </span>
-                  .
-                </p>
-
-                <p>
-                  Welcome to {PORTFOLIO_CONFIG.ownerName}&apos;s interactive
-                  developer portfolio.
-                </p>
-
-                <p>
-                  Explore my background, skills, experience,
-                  and software projects through terminal
-                  commands.
-                </p>
-
-                <p>
-                  Type{' '}
-                  <span className="terminal__command">
-                    help
-                  </span>{' '}
-                  to view available commands.
-                </p>
-              </div>
-
+          <div className="terminal__session">
               <div
-                className="terminal__history"
+                className="terminal__startup"
                 aria-live="polite"
               >
-                {terminalEntries.map((entry) => (
-                  <div
-                    className="terminal__entry"
-                    key={entry.id}
-                  >
-                    <div className="terminal__command-line">
-                      <span className="terminal__prompt">
-                        {entry.prompt}
-                      </span>
+                {startupPhase === 'booting' && (
+                  <div className="terminal__boot">
+                    <span
+                      className="terminal__boot-cursor"
+                      aria-label="JayShell is starting"
+                    >
+                      _
+                    </span>
+                  </div>
+                )}
 
-                      <span>{entry.command}</span>
-                    </div>
+                {startupPhase !== 'booting' && (
+                  <div className="terminal__typed-introduction">
+                    <p className="terminal__typed-text">
+                      {typedIntroduction}
 
-                    {entry.output !== null && (
-                      <div className="terminal__entry-output">
-                        {entry.output}
+                      {startupPhase === 'typing' && (
+                        <span
+                          className="terminal__typing-cursor"
+                          aria-hidden="true"
+                        >
+                          _
+                        </span>
+                      )}
+                    </p>
+
+                    {startupPhase === 'ready' && (
+                      <div className="terminal__intro-actions">
+                        <TerminalAction
+                          command="about"
+                          onRunCommand={runCommandFromOutput}
+                          className="terminal__action--primary"
+                        >
+                          About Me
+                        </TerminalAction>
+
+                        <p className="terminal__intro-hint">
+                          Select About Me or type{' '}
+                          <span className="terminal__command">
+                            help
+                          </span>{' '}
+                          below.
+                        </p>
                       </div>
                     )}
                   </div>
-                ))}
+                )}
               </div>
 
-              <form
-                className="terminal__command-line terminal__command-form"
-                onSubmit={handleCommandSubmit}
-              >
-                <label
-                  className="terminal__prompt"
-                  htmlFor="terminal-command"
-                >
-                  {currentPrompt}
-                </label>
 
-                  <input
-                    ref={commandInputRef}
-                    id="terminal-command"
-                    className="terminal__input terminal__command-input"
-                    type="text"
-                    value={commandInput}
-                    onChange={(event) => {
-                      setCommandInput(event.target.value)
-                      setCommandHistoryIndex(null)
-                    }}
-                    onKeyDown={handleCommandKeyDown}
-                    autoComplete="off"
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    aria-label="Enter a terminal command"
-                  />
-              </form>
+            {startupPhase === 'ready' && (
+               <>
+            <div
+              className="terminal__history"
+              aria-live="polite"
+            >
+              {terminalEntries.map((entry) => (
+                <div
+                  className="terminal__entry"
+                  key={entry.id}
+                >
+                  <div className="terminal__command-line">
+                    <span className="terminal__prompt">
+                      {entry.prompt}
+                    </span>
+
+                    <span>{entry.command}</span>
+                  </div>
+
+                  {entry.output !== null && (
+                    <div className="terminal__entry-output">
+                      {entry.output}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
+
+            <form
+              className="terminal__command-line terminal__command-form"
+              onSubmit={handleCommandSubmit}
+            >
+              <label
+                className="terminal__prompt"
+                htmlFor="terminal-command"
+              >
+                {currentPrompt}
+              </label>
+
+              <input
+                ref={commandInputRef}
+                id="terminal-command"
+                className="terminal__input terminal__command-input"
+                type="text"
+                value={commandInput}
+                onChange={(event) => {
+                  setCommandInput(event.target.value)
+                  setCommandHistoryIndex(null)
+                }}
+                onKeyDown={handleCommandKeyDown}
+                autoComplete="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                aria-label="Enter a terminal command"
+              />
+            </form>
+              </>
+              )}
+          </div>
         </div>
       </section>
     </main>

@@ -5,11 +5,15 @@ import {
 import { getDirectoryByPath } from '../data/virtualFileSystem'
 
 export const createTerminalUsername = (name: string) => {
-  const firstName = name.trim().split(/\s+/)[0]
-
-  const username = firstName
+  const username = name
+    .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9_-]/g, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
 
   return username || 'visitor'
 }

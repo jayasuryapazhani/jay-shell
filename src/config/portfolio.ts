@@ -1,12 +1,13 @@
 export const PORTFOLIO_CONFIG = {
   appName: 'JayShell',
-  version: '0.6.0',
+  version: '0.8.0',
   hostName: 'jayshell',
   ownerName: 'Jayasurya Pazhani',
   contactEmail: 'pazhanijayasurya@gmail.com',
   linkedInUrl:
     'https://www.linkedin.com/in/jayasurya-pazhani/',
   githubUrl: 'https://github.com/jayasuryapazhani',
+  resumeUrl: '/Jayasurya-Pazhani-Resume.pdf',
   homeDirectory: '/home/jayasurya',
 } as const
 
@@ -24,6 +25,7 @@ export const AVAILABLE_COMMANDS = [
   'projects',
   'contact',
   'socials',
+  'resume',
   'stack',
   'features',
   'testing',
