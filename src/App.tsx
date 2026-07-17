@@ -10,6 +10,12 @@ import type {
   ReactNode,
 } from 'react'
 
+import { TerminalHeader } from './components/TerminalHeader'
+import { TerminalHistory } from './components/TerminalHistory'
+import { TerminalPrompt } from './components/TerminalPrompt'
+import { TerminalStartup } from './components/TerminalStartup'
+
+
 import { HelpAction } from './components/HelpAction'
 import { QuickNavigation } from './components/QuickNavigation'
 import { TerminalAction } from './components/TerminalAction'
@@ -26,6 +32,7 @@ import { getDirectoryByPath } from './data/virtualFileSystem'
 import type {
   CommandResult,
   CommandRunner,
+  StartupPhase,
   TerminalEntry,
 } from './types/terminal'
 import {
@@ -38,8 +45,6 @@ import {
 } from './utils/terminal'
 import { generateVisitorAlias } from './utils/visitorAlias'
 import './App.css'
-
-type StartupPhase = 'booting' | 'typing' | 'ready'
 
 
 
@@ -1302,27 +1307,12 @@ const focusCommandInput = () => {
         className="terminal"
         aria-label="JayShell interactive terminal portfolio"
       >
-        <header className="terminal__header">
-          <div
-            className="terminal__controls"
-            aria-hidden="true"
-          >
-            <span className="terminal__control terminal__control--close" />
-            <span className="terminal__control terminal__control--minimize" />
-            <span className="terminal__control terminal__control--maximize" />
-          </div>
-
-          <p className="terminal__title">
-            {terminalUsername}@
-            {PORTFOLIO_CONFIG.hostName}:
-            {formatPromptPath(currentPath)}
-          </p>
-
-          <div
-            className="terminal__header-space"
-            aria-hidden="true"
+          <TerminalHeader
+            title={
+              `${terminalUsername}@${PORTFOLIO_CONFIG.hostName}:` +
+              formatPromptPath(currentPath)
+            }
           />
-        </header>
 
         <div
           ref={terminalBodyRef}
@@ -1357,115 +1347,27 @@ const focusCommandInput = () => {
             >
               <div className="terminal__main">
                 <div className="terminal__session">
-                  <div
-                    className="terminal__startup"
-                    aria-live="polite"
-                  >
-                    {startupPhase === 'booting' && (
-                      <div className="terminal__boot">
-                        <span
-                          className="terminal__boot-cursor"
-                          aria-label="JayShell is starting"
-                        >
-                          _
-                        </span>
-                      </div>
-                    )}
-
-                    {startupPhase !== 'booting' && (
-                      <div className="terminal__typed-introduction">
-                        <p className="terminal__typed-text">
-                          {typedIntroduction}
-
-                          {startupPhase === 'typing' && (
-                            <span
-                              className="terminal__typing-cursor"
-                              aria-hidden="true"
-                            >
-                              _
-                            </span>
-                          )}
-                        </p>
-
-                        {startupPhase === 'ready' && (
-                          <div className="terminal__intro-actions">
-                            <TerminalAction
-                              command="about"
-                              onRunCommand={runCommandFromOutput}
-                              className="terminal__action--primary"
-                            >
-                              About Me
-                            </TerminalAction>
-
-                            <p className="terminal__intro-hint">
-                              Select About Me, use Quick Navigation, or type{' '}
-                              <span className="terminal__command">
-                                help
-                              </span>{' '}
-                              below.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <TerminalStartup
+                    phase={startupPhase}
+                    typedIntroduction={typedIntroduction}
+                    onRunCommand={runCommandFromOutput}
+                  />
 
                   {startupPhase === 'ready' && (
                     <>
-                      <div
-                        className="terminal__history"
-                        aria-live="polite"
-                      >
-                        {terminalEntries.map((entry) => (
-                          <div
-                            className="terminal__entry"
-                            key={entry.id}
-                          >
-                            <div className="terminal__command-line">
-                              <span className="terminal__prompt">
-                                {entry.prompt}
-                              </span>
+                      <TerminalHistory entries={terminalEntries} />
 
-                              <span>{entry.command}</span>
-                            </div>
-
-                            {entry.output !== null && (
-                              <div className="terminal__entry-output">
-                                {entry.output}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-
-                      <form
-                        className="terminal__command-line terminal__command-form"
-                        onSubmit={handleCommandSubmit}
-                      >
-                        <label
-                          className="terminal__prompt"
-                          htmlFor="terminal-command"
-                        >
-                          {currentPrompt}
-                        </label>
-
-                        <input
-                          ref={commandInputRef}
-                          id="terminal-command"
-                          className="terminal__input terminal__command-input"
-                          type="text"
-                          value={commandInput}
-                          onChange={(event) => {
-                            setCommandInput(event.target.value)
-                            setCommandHistoryIndex(null)
-                          }}
-                          onKeyDown={handleCommandKeyDown}
-                          autoComplete="off"
-                          autoCapitalize="none"
-                          spellCheck={false}
-                          aria-label="Enter a terminal command"
-                        />
-                      </form>
+                          <TerminalPrompt
+                            currentPrompt={currentPrompt}
+                            commandInput={commandInput}
+                            commandInputRef={commandInputRef}
+                            onSubmit={handleCommandSubmit}
+                            onChange={(event) => {
+                              setCommandInput(event.target.value)
+                              setCommandHistoryIndex(null)
+                            }}
+                            onKeyDown={handleCommandKeyDown}
+                          />
                     </>
                   )}
                 </div>

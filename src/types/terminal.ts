@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-
+export type StartupPhase = 'booting' | 'typing' | 'ready'
 export type TerminalEntry = {
   id: number
   command: string
