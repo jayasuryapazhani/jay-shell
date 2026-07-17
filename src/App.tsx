@@ -1,17 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
+import {
+  getDirectoryByPath,
+ // virtualFileSystem,
+} from './data/virtualFileSystem'
 import './App.css'
 
 const OWNER_NAME = 'Jayasurya Pazhani'
 const CONTACT_EMAIL = 'pazhanijayasurya@gmail.com'
-const LINKEDIN_URL = 'https://www.linkedin.com/in/jayasurya-pazhani/'
+const LINKEDIN_URL =
+  'https://www.linkedin.com/in/jayasurya-pazhani/'
 const GITHUB_URL = 'https://github.com/jayasuryapazhani'
 const HOME_DIRECTORY = '/home/jayasurya'
 
 type TerminalEntry = {
   id: number
   command: string
-  output: ReactNode
+  prompt: string
+  output: ReactNode | null
+}
+
+type CommandResult = {
+  output: ReactNode | null
+  nextPath?: string[]
+  clear?: boolean
 }
 
 const createTerminalUsername = (name: string) => {
@@ -24,189 +36,501 @@ const createTerminalUsername = (name: string) => {
   return username || 'visitor'
 }
 
-const getCommandOutput = (
-  command: string,
-  visitorName: string,
-): ReactNode => {
-  const normalizedCommand = command.trim().toLowerCase()
+const formatVirtualPath = (path: string[]) => {
+  if (path.length === 0) {
+    return HOME_DIRECTORY
+  }
 
-  switch (normalizedCommand) {
-    case 'help':
-      return (
-        <div className="terminal__result">
-          <p className="terminal__section-title">Available commands</p>
+  return `${HOME_DIRECTORY}/${path.join('/')}`
+}
+
+const formatPromptPath = (path: string[]) => {
+  if (path.length === 0) {
+    return '~'
+  }
+
+  return `~/${path.join('/')}`
+}
+
+const resolveDirectoryPath = (
+  target: string,
+  currentPath: string[],
+): string[] | null => {
+  const normalizedTarget = target
+    .trim()
+    .replaceAll('\\', '/')
+
+  let candidatePath: string[]
+  let pathToProcess: string
+
+  if (
+    normalizedTarget === '' ||
+    normalizedTarget === '~' ||
+    normalizedTarget === HOME_DIRECTORY
+  ) {
+    return []
+  }
+
+  if (normalizedTarget.startsWith('~/')) {
+    candidatePath = []
+    pathToProcess = normalizedTarget.slice(2)
+  } else if (
+    normalizedTarget.startsWith(`${HOME_DIRECTORY}/`)
+  ) {
+    candidatePath = []
+    pathToProcess = normalizedTarget.slice(
+      HOME_DIRECTORY.length + 1,
+    )
+  } else if (normalizedTarget.startsWith('/')) {
+    return null
+  } else {
+    candidatePath = [...currentPath]
+    pathToProcess = normalizedTarget
+  }
+
+  const pathSegments = pathToProcess.split('/')
+
+  for (const segment of pathSegments) {
+    const normalizedSegment = segment.trim().toLowerCase()
+
+    if (
+      normalizedSegment === '' ||
+      normalizedSegment === '.'
+    ) {
+      continue
+    }
+
+    if (normalizedSegment === '..') {
+      candidatePath.pop()
+      continue
+    }
+
+    candidatePath.push(normalizedSegment)
+  }
+
+  if (!getDirectoryByPath(candidatePath)) {
+    return null
+  }
+
+  return candidatePath
+}
+
+const getDirectoryInfoOutput = (
+  path: string[],
+): ReactNode => {
+  const directory = getDirectoryByPath(path)
+
+  if (!directory) {
+    return (
+      <div className="terminal__result terminal__error">
+        <p>Unable to read the current directory.</p>
+      </div>
+    )
+  }
+
+  const childDirectories = Object.keys(
+    directory.children ?? {},
+  )
+
+  return (
+    <div className="terminal__result">
+      <p className="terminal__section-title">
+        {directory.title}
+      </p>
+
+      {directory.description.map((paragraph, index) => (
+        <p key={`${directory.name}-${index}`}>
+          {paragraph}
+        </p>
+      ))}
+
+      {childDirectories.length > 0 && (
+        <>
+          <p className="terminal__section-title">
+            Directories
+          </p>
+
+          <div className="terminal__directory-list">
+            {childDirectories.map((directoryName) => (
+              <span key={directoryName}>
+                {directoryName}/
+              </span>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+const getListOutput = (path: string[]): ReactNode => {
+  const directory = getDirectoryByPath(path)
+
+  if (!directory) {
+    return (
+      <div className="terminal__result terminal__error">
+        <p>ls: unable to read the current directory</p>
+      </div>
+    )
+  }
+
+  const childDirectories = Object.keys(
+    directory.children ?? {},
+  )
+
+  if (childDirectories.length === 0) {
+    return (
+      <div className="terminal__result terminal__muted">
+        <p>
+          No subdirectories. Type{' '}
+          <span className="terminal__command">info</span>{' '}
+          to view this section.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="terminal__directory-list">
+      {childDirectories.map((directoryName) => (
+        <span key={directoryName}>
+          {directoryName}/
+        </span>
+      ))}
+    </div>
+  )
+}
+
+const getHelpOutput = (path: string[]): ReactNode => {
+  const directory = getDirectoryByPath(path)
+  const currentPath = formatVirtualPath(path)
+  const childDirectories = Object.keys(
+    directory?.children ?? {},
+  )
+  const currentSection = path[0]
+
+  return (
+    <div className="terminal__result">
+      <p className="terminal__section-title">
+        Help: {currentPath}
+      </p>
+
+      <div className="terminal__help-list">
+        <p>
+          <span>help</span>
+          Show help for the current directory
+        </p>
+
+        <p>
+          <span>info</span>
+          Display information about the current directory
+        </p>
+
+        <p>
+          <span>ls</span>
+          List subdirectories
+        </p>
+
+        {childDirectories.length > 0 && (
+          <p>
+            <span>cd &lt;name&gt;</span>
+            Enter a subdirectory
+          </p>
+        )}
+
+        <p>
+          <span>cd ..</span>
+          Move to the parent directory
+        </p>
+
+        <p>
+          <span>cd ~</span>
+          Return to the home directory
+        </p>
+
+        <p>
+          <span>pwd</span>
+          Display the current path
+        </p>
+
+        <p>
+          <span>whoami</span>
+          Display the current terminal user
+        </p>
+
+        <p>
+          <span>clear</span>
+          Clear command history
+        </p>
+      </div>
+
+      {path.length === 0 && (
+        <>
+          <p className="terminal__section-title">
+            Portfolio shortcuts
+          </p>
 
           <div className="terminal__help-list">
             <p>
-              <span>help</span>
-              Show available commands
-            </p>
-            <p>
               <span>about</span>
-              Learn about Jayasurya
+              Display information about Jayasurya
             </p>
+
+            <p>
+              <span>skills</span>
+              Display technical skills
+            </p>
+
+            <p>
+              <span>experience</span>
+              Display professional experience
+            </p>
+
+            <p>
+              <span>education</span>
+              Display education
+            </p>
+
             <p>
               <span>projects</span>
-              View featured projects
+              Display featured projects
             </p>
+
             <p>
               <span>contact</span>
               Display contact information
             </p>
+
             <p>
               <span>socials</span>
               Display LinkedIn and GitHub
             </p>
+          </div>
+        </>
+      )}
+
+      {path.length > 0 && currentSection && (
+        <>
+          <p className="terminal__section-title">
+            Section shortcut
+          </p>
+
+          <div className="terminal__help-list">
             <p>
-              <span>whoami</span>
-              Display the current terminal user
-            </p>
-            <p>
-              <span>pwd</span>
-              Show the current directory
-            </p>
-            <p>
-              <span>ls</span>
-              List available portfolio directories
-            </p>
-            <p>
-              <span>clear</span>
-              Clear the terminal history
+              <span>{currentSection}</span>
+              Display the main {currentSection} section
             </p>
           </div>
-        </div>
-      )
+        </>
+      )}
+    </div>
+  )
+}
 
-    case 'about':
-      return (
-        <div className="terminal__result">
-          <p className="terminal__section-title">About Jayasurya</p>
-          <p>
-            Jayasurya Pazhani is a software engineer and MEng Software
-            Engineering student at Concordia University.
-          </p>
-          <p>
-            He is focused on software development, backend systems, APIs,
-            testing, automation, and building practical developer tools.
-          </p>
-        </div>
-      )
+const getContactOutput = (): ReactNode => (
+  <div className="terminal__result">
+    <p className="terminal__section-title">Contact</p>
 
-    case 'projects':
-      return (
-        <div className="terminal__result">
-          <p className="terminal__section-title">Featured projects</p>
-          <p>
-            <span className="terminal__directory">shrtn/</span>
-            {' — '}URL shortener and QR code Chrome extension
-          </p>
-          <p>
-            <span className="terminal__directory">supportbot/</span>
-            {' — '}API and test-automation learning platform
-          </p>
-          <p>
-            <span className="terminal__directory">dev-monitor/</span>
-            {' — '}Developer system-monitoring dashboard
-          </p>
-          <p>
-            <span className="terminal__directory">jay-shell/</span>
-            {' — '}Interactive terminal portfolio
-          </p>
-        </div>
-      )
+    <p>
+      Email:{' '}
+      <a
+        className="terminal__link"
+        href={`mailto:${CONTACT_EMAIL}`}
+      >
+        {CONTACT_EMAIL}
+      </a>
+    </p>
+  </div>
+)
 
-    case 'contact':
-      return (
-        <div className="terminal__result">
-          <p className="terminal__section-title">Contact</p>
-          <p>
-            Email:{' '}
-            <a className="terminal__link" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-          </p>
-        </div>
-      )
+const getSocialsOutput = (): ReactNode => (
+  <div className="terminal__result">
+    <p className="terminal__section-title">
+      Social Profiles
+    </p>
 
-    case 'socials':
-      return (
-        <div className="terminal__result">
-          <p className="terminal__section-title">Social profiles</p>
+    <p>
+      LinkedIn:{' '}
+      <a
+        className="terminal__link"
+        href={LINKEDIN_URL}
+        target="_blank"
+        rel="noreferrer"
+      >
+        linkedin.com/in/jayasurya-pazhani
+      </a>
+    </p>
 
-          <p>
-            LinkedIn:{' '}
-            <a
-              className="terminal__link"
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              linkedin.com/in/jayasurya-pazhani
-            </a>
-          </p>
+    <p>
+      GitHub:{' '}
+      <a
+        className="terminal__link"
+        href={GITHUB_URL}
+        target="_blank"
+        rel="noreferrer"
+      >
+        github.com/jayasuryapazhani
+      </a>
+    </p>
+  </div>
+)
 
-          <p>
-            GitHub:{' '}
-            <a
-              className="terminal__link"
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              github.com/jayasuryapazhani
-            </a>
-          </p>
-        </div>
-      )
+const executeCommand = (
+  commandInput: string,
+  visitorName: string,
+  currentPath: string[],
+): CommandResult => {
+  const commandParts = commandInput.trim().split(/\s+/)
+  const commandName = commandParts[0].toLowerCase()
+  const commandArguments = commandParts.slice(1)
 
-    case 'whoami':
-      return (
-        <div className="terminal__result">
-          <p>{createTerminalUsername(visitorName)}</p>
-          <p>
-            Current session visitor: <span>{visitorName}</span>
-          </p>
-        </div>
-      )
+  switch (commandName) {
+    case 'help':
+      return {
+        output: getHelpOutput(currentPath),
+      }
 
-    case 'pwd':
-      return (
-        <div className="terminal__result">
-          <p>{HOME_DIRECTORY}</p>
-        </div>
-      )
+    case 'info':
+      return {
+        output: getDirectoryInfoOutput(currentPath),
+      }
 
     case 'ls':
-      return (
-        <div className="terminal__directory-list">
-          <span>about/</span>
-          <span>skills/</span>
-          <span>experience/</span>
-          <span>education/</span>
-          <span>projects/</span>
-          <span>contact/</span>
-          <span>socials/</span>
-        </div>
+      return {
+        output: getListOutput(currentPath),
+      }
+
+    case 'pwd':
+      return {
+        output: (
+          <div className="terminal__result">
+            <p>{formatVirtualPath(currentPath)}</p>
+          </div>
+        ),
+      }
+
+    case 'whoami':
+      return {
+        output: (
+          <div className="terminal__result">
+            <p>{createTerminalUsername(visitorName)}</p>
+            <p>
+              Current session visitor: {visitorName}
+            </p>
+          </div>
+        ),
+      }
+
+    case 'cd': {
+      if (commandArguments.length > 1) {
+        return {
+          output: (
+            <div className="terminal__result terminal__error">
+              <p>cd: too many arguments</p>
+            </div>
+          ),
+        }
+      }
+
+      const targetDirectory =
+        commandArguments[0] ?? '~'
+
+      const nextPath = resolveDirectoryPath(
+        targetDirectory,
+        currentPath,
       )
 
+      if (!nextPath) {
+        return {
+          output: (
+            <div className="terminal__result terminal__error">
+              <p>
+                jayshell: cd: {targetDirectory}: No such
+                directory
+              </p>
+            </div>
+          ),
+        }
+      }
+
+      return {
+        output: null,
+        nextPath,
+      }
+    }
+
+    case 'about':
+      return {
+        output: getDirectoryInfoOutput(['about']),
+      }
+
+    case 'skills':
+      return {
+        output: getDirectoryInfoOutput(['skills']),
+      }
+
+    case 'experience':
+      return {
+        output: getDirectoryInfoOutput(['experience']),
+      }
+
+    case 'education':
+      return {
+        output: getDirectoryInfoOutput(['education']),
+      }
+
+    case 'projects':
+      return {
+        output: getDirectoryInfoOutput(['projects']),
+      }
+
+    case 'contact':
+      return {
+        output: getContactOutput(),
+      }
+
+    case 'socials':
+      return {
+        output: getSocialsOutput(),
+      }
+
+    case 'clear':
+      return {
+        output: null,
+        clear: true,
+      }
+
     default:
-      return (
-        <div className="terminal__result terminal__error">
-          <p>jayshell: command not found: {command}</p>
-          <p>
-            Type <span className="terminal__command">help</span> to see
-            available commands.
-          </p>
-        </div>
-      )
+      return {
+        output: (
+          <div className="terminal__result terminal__error">
+            <p>
+              jayshell: command not found: {commandInput}
+            </p>
+
+            <p>
+              Type{' '}
+              <span className="terminal__command">
+                help
+              </span>{' '}
+              to see available commands.
+            </p>
+          </div>
+        ),
+      }
   }
 }
 
 function App() {
   const [nameInput, setNameInput] = useState('')
-  const [visitorName, setVisitorName] = useState<string | null>(null)
+  const [visitorName, setVisitorName] =
+    useState<string | null>(null)
   const [commandInput, setCommandInput] = useState('')
-  const [terminalEntries, setTerminalEntries] = useState<TerminalEntry[]>([])
+  const [currentPath, setCurrentPath] =
+    useState<string[]>([])
+  const [terminalEntries, setTerminalEntries] = useState<
+    TerminalEntry[]
+  >([])
 
   const terminalBodyRef = useRef<HTMLDivElement>(null)
   const commandInputRef = useRef<HTMLInputElement>(null)
@@ -216,6 +540,10 @@ function App() {
     ? createTerminalUsername(visitorName)
     : 'visitor'
 
+  const currentPrompt = `${terminalUsername}@jayshell:${formatPromptPath(
+    currentPath,
+  )}$`
+
   useEffect(() => {
     if (visitorName) {
       commandInputRef.current?.focus()
@@ -224,11 +552,14 @@ function App() {
     const terminalBody = terminalBodyRef.current
 
     if (terminalBody) {
-      terminalBody.scrollTop = terminalBody.scrollHeight
+      terminalBody.scrollTop =
+        terminalBody.scrollHeight
     }
-  }, [visitorName, terminalEntries])
+  }, [visitorName, terminalEntries, currentPath])
 
-  const handleNameSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleNameSubmit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault()
 
     const cleanedName = nameInput.trim()
@@ -240,7 +571,9 @@ function App() {
     setVisitorName(cleanedName)
   }
 
-  const handleCommandSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleCommandSubmit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault()
 
     if (!visitorName) {
@@ -253,7 +586,13 @@ function App() {
       return
     }
 
-    if (cleanedCommand.toLowerCase() === 'clear') {
+    const commandResult = executeCommand(
+      cleanedCommand,
+      visitorName,
+      currentPath,
+    )
+
+    if (commandResult.clear) {
       setTerminalEntries([])
       setCommandInput('')
       return
@@ -264,13 +603,18 @@ function App() {
     const newEntry: TerminalEntry = {
       id: entryIdRef.current,
       command: cleanedCommand,
-      output: getCommandOutput(cleanedCommand, visitorName),
+      prompt: currentPrompt,
+      output: commandResult.output,
     }
 
     setTerminalEntries((currentEntries) => [
       ...currentEntries,
       newEntry,
     ])
+
+    if (commandResult.nextPath) {
+      setCurrentPath(commandResult.nextPath)
+    }
 
     setCommandInput('')
   }
@@ -288,17 +632,24 @@ function App() {
         aria-label="JayShell interactive terminal portfolio"
       >
         <header className="terminal__header">
-          <div className="terminal__controls" aria-hidden="true">
+          <div
+            className="terminal__controls"
+            aria-hidden="true"
+          >
             <span className="terminal__control terminal__control--close" />
             <span className="terminal__control terminal__control--minimize" />
             <span className="terminal__control terminal__control--maximize" />
           </div>
 
           <p className="terminal__title">
-            {terminalUsername}@jayshell:~
+            {terminalUsername}@jayshell:
+            {formatPromptPath(currentPath)}
           </p>
 
-          <div className="terminal__header-space" aria-hidden="true" />
+          <div
+            className="terminal__header-space"
+            aria-hidden="true"
+          />
         </header>
 
         <div
@@ -307,7 +658,10 @@ function App() {
           onClick={focusCommandInput}
         >
           <div className="terminal__intro">
-            <p className="terminal__brand">JAYSHELL v0.2.0</p>
+            <p className="terminal__brand">
+              JAYSHELL v0.3.0
+            </p>
+
             <p>Interactive terminal portfolio</p>
 
             <p>
@@ -334,7 +688,9 @@ function App() {
                   className="terminal__input terminal__input--name"
                   type="text"
                   value={nameInput}
-                  onChange={(event) => setNameInput(event.target.value)}
+                  onChange={(event) =>
+                    setNameInput(event.target.value)
+                  }
                   maxLength={40}
                   autoComplete="off"
                   autoFocus
@@ -345,7 +701,7 @@ function App() {
           ) : (
             <div className="terminal__session">
               <p className="terminal__submitted-name">
-                Enter your name: <span>{visitorName}</span>
+                Enter your name: {visitorName}
               </p>
 
               <div className="terminal__welcome">
@@ -358,13 +714,14 @@ function App() {
                 </p>
 
                 <p>
-                  Welcome to {OWNER_NAME}&apos;s interactive developer
-                  portfolio.
+                  Welcome to {OWNER_NAME}&apos;s interactive
+                  developer portfolio.
                 </p>
 
                 <p>
-                  Explore my background, skills, experience, and software
-                  projects through terminal commands.
+                  Explore my background, skills, experience,
+                  and software projects through terminal
+                  commands.
                 </p>
 
                 <p>
@@ -381,17 +738,23 @@ function App() {
                 aria-live="polite"
               >
                 {terminalEntries.map((entry) => (
-                  <div className="terminal__entry" key={entry.id}>
+                  <div
+                    className="terminal__entry"
+                    key={entry.id}
+                  >
                     <div className="terminal__command-line">
                       <span className="terminal__prompt">
-                        {terminalUsername}@jayshell:~$
+                        {entry.prompt}
                       </span>
+
                       <span>{entry.command}</span>
                     </div>
 
-                    <div className="terminal__entry-output">
-                      {entry.output}
-                    </div>
+                    {entry.output !== null && (
+                      <div className="terminal__entry-output">
+                        {entry.output}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -404,7 +767,7 @@ function App() {
                   className="terminal__prompt"
                   htmlFor="terminal-command"
                 >
-                  {terminalUsername}@jayshell:~$
+                  {currentPrompt}
                 </label>
 
                 <input

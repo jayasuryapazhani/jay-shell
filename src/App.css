@@ -250,6 +250,14 @@
   color: #ff7b72;
 }
 
+.terminal__result .terminal__directory-list {
+  margin-top: 5px;
+}
+
+.terminal__muted {
+  color: #9ba3af;
+}
+
 @media (max-width: 700px) {
   .app-shell {
     padding: 12px;
