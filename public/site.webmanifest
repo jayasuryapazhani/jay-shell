@@ -1,0 +1,18 @@
+{
+  "name": "JayShell — Jayasurya Pazhani",
+  "short_name": "JayShell",
+  "description": "Interactive terminal portfolio of software engineer Jayasurya Pazhani.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#0c0c0c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
