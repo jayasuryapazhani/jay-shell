@@ -1,8 +1,11 @@
 export const PORTFOLIO_CONFIG = {
   appName: 'JayShell',
-  version: '0.21.0',
+  version: '0.22.0',
   hostName: 'jayshell',
   ownerName: 'Jayasurya Pazhani',
+  siteUrl: 'https://jay-shell.vercel.app/',
+  repositoryUrl:
+    'https://github.com/jayasuryapazhani/jay-shell',
   contactEmail: 'pazhanijayasurya@gmail.com',
   linkedInUrl:
     'https://www.linkedin.com/in/jayasurya-pazhani/',

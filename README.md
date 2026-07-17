@@ -6,6 +6,13 @@ JayShell presents the professional experience, education, technical skills, proj
 
 Users can explore the portfolio by entering terminal commands, navigating a virtual filesystem, selecting clickable commands, or using the responsive Quick Navigation panel.
 
+
+## Live Application
+
+- Website: [jay-shell.vercel.app](https://jay-shell.vercel.app/)
+- Repository: [github.com/jayasuryapazhani/jay-shell](https://github.com/jayasuryapazhani/jay-shell)
+
+
 ## Features
 
 - Interactive terminal command interface
@@ -280,7 +287,8 @@ jay-shell/
 │   ├── favicon.svg
 │   ├── Jaysurya-Pazhani-Resume.pdf
 │   ├── robots.txt
-│   └── site.webmanifest
+│   ├── site.webmanifest
+│   └── sitemap.xml
 ├── src/
 │   ├── components/
 │   │   ├── HelpAction.tsx
@@ -396,7 +404,15 @@ npm run preview
 
 ## Deployment
 
-Deployment instructions and the production website URL will be added after the application is published.
+JayShell is deployed on Vercel and connected to the GitHub repository.
+
+- Production website: [https://jay-shell.vercel.app/](https://jay-shell.vercel.app/)
+- Source repository: [https://github.com/jayasuryapazhani/jay-shell](https://github.com/jayasuryapazhani/jay-shell)
+- Framework preset: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+
+Vercel creates preview deployments for development branches and publishes production changes from the configured production branch.
 
 ## Author
 

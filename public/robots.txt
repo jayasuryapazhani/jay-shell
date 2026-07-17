@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://jay-shell.vercel.app/sitemap.xml
