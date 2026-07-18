@@ -1,3 +1,4 @@
+import { PORTFOLIO_CONFIG } from '../config/portfolio'
 import type {
   CommandRunner,
   StartupPhase,
@@ -48,16 +49,48 @@ export function TerminalStartup({
 
           {phase === 'ready' && (
             <div className="terminal__intro-actions">
-              <TerminalAction
-                command="about"
-                onRunCommand={onRunCommand}
-                className="terminal__action--primary"
-              >
-                About Me
-              </TerminalAction>
+              <div className="terminal__intro-action-row">
+                <TerminalAction
+                  command="about"
+                  onRunCommand={onRunCommand}
+                  className="terminal__action--primary"
+                >
+                  About Me
+                </TerminalAction>
+
+                <a
+                  className={[
+                    'terminal__resume-action',
+                    'terminal__intro-resume-action',
+                  ].join(' ')}
+                  href={PORTFOLIO_CONFIG.resumeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(event) =>
+                    event.stopPropagation()
+                  }
+                >
+                  View Resume
+                </a>
+
+                <a
+                  className={[
+                    'terminal__resume-action',
+                    'terminal__intro-resume-action',
+                    'terminal__intro-resume-action--download',
+                  ].join(' ')}
+                  href={PORTFOLIO_CONFIG.resumeUrl}
+                  download="Jayasurya-Pazhani-Resume.pdf"
+                  onClick={(event) =>
+                    event.stopPropagation()
+                  }
+                >
+                  Download Resume
+                </a>
+              </div>
 
               <p className="terminal__intro-hint">
-                Select About Me, use Quick Navigation, or type{' '}
+                Select an action, use Quick Navigation, or type{' '}
                 <span className="terminal__command">
                   help
                 </span>{' '}

@@ -1,6 +1,6 @@
 export const PORTFOLIO_CONFIG = {
   appName: 'JayShell',
-  version: '0.22.0',
+  version: '0.23.0',
   hostName: 'jayshell',
   ownerName: 'Jayasurya Pazhani',
   siteUrl: 'https://jay-shell.vercel.app/',

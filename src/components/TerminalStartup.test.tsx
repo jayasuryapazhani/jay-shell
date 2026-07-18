@@ -12,33 +12,45 @@ import userEvent from '@testing-library/user-event'
 import { TerminalStartup } from './TerminalStartup'
 
 describe('TerminalStartup', () => {
-  it('renders the boot cursor during the booting phase', () => {
-    const { container } = render(
-      <TerminalStartup
-        phase="booting"
-        typedIntroduction=""
-        onRunCommand={vi.fn()}
-      />,
-    )
+it('renders the boot cursor during the booting phase', () => {
+  const { container } = render(
+    <TerminalStartup
+      phase="booting"
+      typedIntroduction=""
+      onRunCommand={vi.fn()}
+    />,
+  )
 
-    expect(
-      screen.getByLabelText(
-        'JayShell is starting',
-      ),
-    ).toBeInTheDocument()
+  expect(
+    screen.getByLabelText(
+      'JayShell is starting',
+    ),
+  ).toBeInTheDocument()
 
-    expect(
-      container.querySelector(
-        '.terminal__boot-cursor',
-      ),
-    ).toBeInTheDocument()
+  expect(
+    container.querySelector(
+      '.terminal__boot-cursor',
+    ),
+  ).toBeInTheDocument()
 
-    expect(
-      screen.queryByRole('button', {
-        name: 'About Me',
-      }),
-    ).not.toBeInTheDocument()
-  })
+  expect(
+    screen.queryByRole('button', {
+      name: 'About Me',
+    }),
+  ).not.toBeInTheDocument()
+
+  expect(
+    screen.queryByRole('link', {
+      name: 'View Resume',
+    }),
+  ).not.toBeInTheDocument()
+
+  expect(
+    screen.queryByRole('link', {
+      name: 'Download Resume',
+    }),
+  ).not.toBeInTheDocument()
+})
 
   it('renders partial introduction text during typing', () => {
     const { container } = render(
@@ -118,29 +130,30 @@ describe('TerminalStartup', () => {
     ).toBeInTheDocument()
   })
 
-  it('runs the about command when About Me is clicked', async () => {
-    const user = userEvent.setup()
-    const onRunCommand = vi.fn()
+it('runs the about command when About Me is clicked', async () => {
+  const user = userEvent.setup()
+  const onRunCommand = vi.fn()
 
-    render(
-      <TerminalStartup
-        phase="ready"
-        typedIntroduction="Welcome to JayShell."
-        onRunCommand={onRunCommand}
-      />,
-    )
+  render(
+    <TerminalStartup
+      phase="ready"
+      typedIntroduction="Welcome to JayShell."
+      onRunCommand={onRunCommand}
+    />,
+  )
 
-    await user.click(
-      screen.getByRole('button', {
-        name: 'About Me',
-      }),
-    )
+  await user.click(
+    screen.getByRole('button', {
+      name: 'About Me',
+    }),
+  )
 
-    expect(onRunCommand).toHaveBeenCalledTimes(1)
-    expect(onRunCommand).toHaveBeenCalledWith(
-      'about',
-    )
-  })
+  expect(onRunCommand).toHaveBeenCalledTimes(1)
+
+  expect(onRunCommand).toHaveBeenCalledWith(
+    'about',
+  )
+})
 
   it('uses a polite live region for startup updates', () => {
     const { container } = render(
@@ -160,4 +173,53 @@ describe('TerminalStartup', () => {
       'polite',
     )
   })
+  it('shows view and download resume links when ready', () => {
+  render(
+    <TerminalStartup
+      phase="ready"
+      typedIntroduction="Welcome to JayShell."
+      onRunCommand={vi.fn()}
+    />,
+  )
+
+  const viewResumeLink = screen.getByRole(
+    'link',
+    {
+      name: 'View Resume',
+    },
+  )
+
+  expect(viewResumeLink).toHaveAttribute(
+    'href',
+    '/Jayasurya-Pazhani-Resume.pdf',
+  )
+
+  expect(viewResumeLink).toHaveAttribute(
+    'target',
+    '_blank',
+  )
+
+  expect(viewResumeLink).toHaveAttribute(
+    'rel',
+    'noreferrer',
+  )
+
+  const downloadResumeLink = screen.getByRole(
+    'link',
+    {
+      name: 'Download Resume',
+    },
+  )
+
+  expect(downloadResumeLink).toHaveAttribute(
+    'href',
+    '/Jayasurya-Pazhani-Resume.pdf',
+  )
+
+  expect(downloadResumeLink).toHaveAttribute(
+    'download',
+    'Jayasurya-Pazhani-Resume.pdf',
+  )
+})
+
 })
