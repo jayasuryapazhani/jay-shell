@@ -31,6 +31,17 @@ describe('virtual filesystem', () => {
     expect(sipTimeDirectory?.title).toBe('SipTime')
   })
 
+  it('resolves the Recordock project directory', () => {
+    const recordockDirectory = getDirectoryByPath([
+      'projects',
+      'recordock',
+    ])
+
+    expect(recordockDirectory).not.toBeNull()
+    expect(recordockDirectory?.name).toBe('recordock')
+    expect(recordockDirectory?.title).toBe('Recordock')
+  })
+
   it('returns null for a directory that does not exist', () => {
     const missingDirectory = getDirectoryByPath([
       'projects',
@@ -42,10 +53,10 @@ describe('virtual filesystem', () => {
 })
 
 describe('project portfolio data', () => {
-  it('contains seven configured projects', () => {
+  it('contains eight configured projects', () => {
     const projects = getAllProjects()
 
-    expect(projects).toHaveLength(7)
+    expect(projects).toHaveLength(8)
   })
 
   it('keeps project data synchronized with project directories', () => {
@@ -73,6 +84,34 @@ describe('project portfolio data', () => {
     expect(project?.name).toBe('PixiJS Slot Machine')
     expect(project?.githubUrl).toContain(
       'slot-machine-pixijs',
+    )
+  })
+
+  it('includes current published product links', () => {
+    const recordock = getProjectByPath([
+      'projects',
+      'recordock',
+    ])
+
+    expect(recordock?.status).toContain('Published')
+    expect(recordock?.demoUrl).toContain('recordock.vercel.app')
+    expect(recordock?.storeUrl).toContain('chromewebstore.google.com')
+
+    const sipTime = getProjectByPath([
+      'projects',
+      'siptime',
+    ])
+
+    expect(sipTime?.demoUrl).toContain('siptime.vercel.app')
+
+    const shrtn = getProjectByPath([
+      'projects',
+      'shrtn',
+    ])
+
+    expect(shrtn?.status).toContain('v1.1.0')
+    expect(shrtn?.features).toContain(
+      'Shorten selected hyperlinks without opening them',
     )
   })
 
