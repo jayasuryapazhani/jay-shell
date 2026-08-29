@@ -61,8 +61,8 @@ export const virtualFileSystem: VirtualDirectory = {
           name: 'shrtn',
           title: 'Shrtn',
           description: [
-            'A Chrome extension and backend service for shortening URLs and generating shareable QR codes.',
-            'Built with React, Node.js, Express, PostgreSQL, Neon, Chrome Extension Manifest V3, and Vitest.',
+            'A production URL shortener and Manifest V3 extension for persistent links, QR codes, redirect analytics, and browser context-menu actions.',
+            'Version 1.1.0 also includes local recent-link history, duplicate detection, result restoration, and resilient API handling.',
           ],
         },
 
@@ -70,8 +70,17 @@ export const virtualFileSystem: VirtualDirectory = {
           name: 'siptime',
           title: 'SipTime',
           description: [
-            'A lightweight hydration reminder browser extension published for Chrome and Brave.',
-            'Built with React, TypeScript, Vite, Tailwind CSS, Chrome Extension Manifest V3, alarms, notifications, and local browser storage.',
+            'A privacy-focused hydration reminder extension published for Chrome and Brave.',
+            'It supports interval and fixed schedules, quiet hours, snoozing, local settings, browser notifications, and a responsive Vercel landing page.',
+          ],
+        },
+
+        recordock: {
+          name: 'recordock',
+          title: 'Recordock',
+          description: [
+            'A local-first screen recorder for Chrome and the web that captures tabs, windows, or monitors with optional source audio.',
+            'The extension uses a service worker and offscreen document so recording continues after the popup closes, while completed recordings stay local.',
           ],
         },
 
