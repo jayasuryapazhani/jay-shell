@@ -17,8 +17,8 @@ export const virtualFileSystem: VirtualDirectory = {
       name: 'about',
       title: 'About Jayasurya',
       description: [
-        'Jayasurya Pazhani is a software engineer and MEng Software Engineering student at Concordia University.',
-        'He is interested in software development, backend systems, APIs, testing, automation, and practical developer tools.',
+        'Jayasurya Pazhani is a software engineer and freelance developer with a Master of Engineering in Software Engineering from Concordia University.',
+        'He builds full-stack applications, backend services, browser extensions, and developer tools, with an interest in testing and reliable deployment.',
       ],
     },
 
@@ -35,8 +35,8 @@ export const virtualFileSystem: VirtualDirectory = {
       name: 'experience',
       title: 'Professional Experience',
       description: [
-        'Professional experience includes desktop application development, debugging, issue investigation, code reviews, testing, and cross-functional collaboration.',
-        'Detailed work experience and accomplishments will be added in a later section.',
+        'Experience includes freelance web development, frontend engineering, enterprise application support, testing, debugging, and collaboration with engineering teams.',
+        'Use the experience command for roles, dates, and responsibilities, including current freelance client work.',
       ],
     },
 
@@ -57,11 +57,29 @@ export const virtualFileSystem: VirtualDirectory = {
         'Use ls to list projects and cd <project> to open one.',
       ],
       children: {
+        'life-of-priya': {
+          name: 'life-of-priya',
+          title: 'Life of Priya / JayStore',
+          description: [
+            'A production creator website and digital storefront built for a freelance client.',
+            'Includes customer accounts, payments, digital fulfillment, bookings, and administration using Next.js and Supabase.',
+          ],
+        },
+
+        pazora: {
+          name: 'pazora',
+          title: 'Pazora',
+          description: [
+            'A self-hosted streaming interface built with Next.js, Jellyfin, HLS, and Caddy.',
+            'Includes media discovery, playback, server-managed sessions, and short-lived encrypted media grants.',
+          ],
+        },
+
         shrtn: {
           name: 'shrtn',
           title: 'Shrtn',
           description: [
-            'A production URL shortener and Manifest V3 extension for persistent links, QR codes, redirect analytics, and browser context-menu actions.',
+            'A full-stack URL shortener and published Manifest V3 extension for persistent links, QR codes, redirect analytics, and browser context-menu actions.',
             'Version 1.1.0 also includes local recent-link history, duplicate detection, result restoration, and resilient API handling.',
           ],
         },

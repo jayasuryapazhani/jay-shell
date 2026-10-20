@@ -15,13 +15,103 @@ export type ProjectDetails = {
 }
 
 const projectsBySlug: Record<string, ProjectDetails> = {
+  'life-of-priya': {
+    slug: 'life-of-priya',
+    name: 'Life of Priya / JayStore',
+    category: 'Freelance client platform and digital storefront',
+    status: 'Live · Client project',
+    summary: [
+      'A production creator platform and digital storefront developed for an independent content creator.',
+      'The site combines publishing, customer accounts, digital products, checkout, bookings, and an admin workspace.',
+    ],
+    stack: [
+      'Next.js 16', 'React', 'TypeScript', 'Supabase Auth',
+      'PostgreSQL', 'Supabase Storage', 'Stripe', 'Razorpay',
+      'Resend', 'Google Calendar', 'Google Meet', 'Vercel',
+    ],
+    features: [
+      'Responsive creator website and content publishing',
+      'Digital storefront with products, cart, and checkout',
+      'Customer accounts, orders, and downloadable purchases',
+      'Stripe and Razorpay payment workflows',
+      'Digital fulfillment and purchase entitlements',
+      'Paid one-to-one call bookings',
+      'Transactional emails and calendar integrations',
+      'Private admin console with staff permissions',
+      'Custom CMS and page builder',
+    ],
+    testing: [
+      'Production QA across account, checkout, and fulfillment flows',
+      'Authentication and session-behavior checks',
+      'Deployment validation and operational troubleshooting',
+      'Testing of booking and customer communication workflows',
+    ],
+    architecture: [
+      'Next.js application with React and TypeScript',
+      'Supabase authentication, PostgreSQL, storage, and row-level security',
+      'Stripe and Razorpay payment integrations',
+      'Resend transactional email and Google booking integrations',
+      'Vercel production deployment',
+      'Cross-domain authentication for website and store',
+    ],
+    lessons: [
+      'Delivering and maintaining software for a real client',
+      'Coordinating authentication, checkout, and digital delivery',
+      'Managing secure data access and staff permissions',
+      'Testing connected services across production workflows',
+    ],
+    demoUrl: 'https://lifeofpriya.com/',
+  },
+
+  pazora: {
+    slug: 'pazora',
+    name: 'Pazora',
+    category: 'Self-hosted streaming application',
+    status: 'Live · Private deployment',
+    summary: [
+      'A custom streaming interface built on Jellyfin, with personalized browsing, search, favorites, and playback.',
+      'Designed for a self-hosted stack that keeps permanent media-server credentials out of browser-visible requests.',
+    ],
+    stack: [
+      'Next.js', 'React', 'TypeScript', 'Tailwind CSS',
+      'Jellyfin SDK', 'HLS.js', 'Caddy', 'Windows',
+    ],
+    features: [
+      'Personalized libraries and media discovery',
+      'Search, favorites, and Continue Watching',
+      'Recommendations and playback-state synchronization',
+      'Responsive video playback with HLS',
+      'Server-managed sessions and secure playback grants',
+      'Health and readiness checks for hosted services',
+    ],
+    testing: [
+      'Playback and session-flow validation',
+      'Health and readiness checks',
+      'Restart and service-recovery checks',
+      'Testing across playback and navigation flows',
+    ],
+    architecture: [
+      'Next.js frontend and API layer',
+      'Jellyfin-backed authentication and session handling',
+      'Short-lived encrypted playback grants',
+      'HLS media playback and transcoding',
+      'Caddy reverse proxy and Windows-hosted services',
+    ],
+    lessons: [
+      'Building an interface around an existing media server',
+      'Separating application/API traffic from media delivery',
+      'Keeping long-lived credentials out of client JavaScript',
+      'Operating and troubleshooting a self-hosted application',
+    ],
+  },
+
   shrtn: {
     slug: 'shrtn',
     name: 'Shrtn',
     category: 'Full-stack URL shortener and Chromium extension',
-    status: 'Published · v1.1.0',
+    status: 'Chrome extension · v1.1.0',
     summary: [
-      'A production URL-shortening platform and Manifest V3 browser extension for persistent short links, QR codes, and redirect analytics.',
+      'A full-stack URL shortener and published Manifest V3 extension for short links, QR codes, and redirect analytics. The hosted API demo is currently unavailable.',
       'The current extension adds page and link context-menu actions, local recent-link history, result restoration, duplicate detection, and resilient API handling.',
     ],
     stack: [
@@ -87,7 +177,6 @@ const projectsBySlug: Record<string, ProjectDetails> = {
       'Publishing and maintaining a production Manifest V3 extension',
     ],
     githubUrl: 'https://github.com/jayasuryapazhani/shrtn',
-    demoUrl: 'https://shrtn.up.railway.app',
     storeUrl:
       'https://chromewebstore.google.com/detail/shrtn/adodmibgcbmnhdagfkipjpjfkeaalfim',
   },
@@ -96,7 +185,7 @@ const projectsBySlug: Record<string, ProjectDetails> = {
     slug: 'siptime',
     name: 'SipTime',
     category: 'Privacy-focused hydration reminder extension',
-    status: 'Published',
+    status: 'Published · v1.2.0',
     summary: [
       'A Chrome and Brave extension for configurable hydration reminders without accounts, subscriptions, analytics, or a backend service.',
       'Users can combine interval or fixed-time schedules with quiet hours, snooze controls, local settings, and a live next-reminder view.',
@@ -468,7 +557,7 @@ const projectsBySlug: Record<string, ProjectDetails> = {
     slug: 'jay-shell',
     name: 'JayShell',
     category: 'Interactive developer portfolio',
-    status: 'In development',
+    status: 'Live · v0.23.0',
     summary: [
       'A terminal-style portfolio that allows visitors to explore professional information using simulated shell commands.',
       'The interface includes a virtual filesystem, contextual help, keyboard navigation, and clickable terminal commands.',
@@ -517,6 +606,8 @@ const projectsBySlug: Record<string, ProjectDetails> = {
       'Implementing accessible keyboard navigation',
       'Preserving command prompts with historical state',
     ],
+    githubUrl: 'https://github.com/jayasuryapazhani/jay-shell',
+    demoUrl: 'https://jay-shell.vercel.app/',
   },
 }
 

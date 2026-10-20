@@ -10,7 +10,7 @@ export const PORTFOLIO_CONFIG = {
   linkedInUrl:
     'https://www.linkedin.com/in/jayasurya-pazhani/',
   githubUrl: 'https://github.com/jayasuryapazhani',
-  resumeUrl: '/Jayasurya-Pazhani-Resume.pdf',
+  resumeUrl: '/resume.pdf',
   homeDirectory: '/home/jayasurya',
 } as const
 

@@ -7,6 +7,12 @@ JayShell presents the professional experience, education, technical skills, proj
 Users can explore the portfolio by entering terminal commands, navigating a virtual filesystem, selecting clickable commands, or using the responsive Quick Navigation panel.
 
 
+## Updating the resume
+
+The portfolio résumé is generated from `resume/master.tex`, a copy of the canonical source in the job-application tracker. The resume workflow rebuilds `public/resume.pdf` and refreshes `public/Jayasurya-Pazhani-Resume.pdf` whenever the source changes.
+
+Keep project descriptions aligned with the master résumé. Avoid publishing role-specific application variants here.
+
 ## Live Application
 
 - Website: [jay-shell.vercel.app](https://jay-shell.vercel.app/)
@@ -149,6 +155,14 @@ store
 
 ## Portfolio Projects
 
+### Life of Priya / JayStore
+
+A live freelance client platform and digital storefront built with Next.js, React, TypeScript, and Supabase, with payment processing, account management, digital delivery, bookings, and administration. The implementation repository is private.
+
+### Pazora
+
+A privately deployed streaming interface built with Next.js, Jellyfin, HLS.js, and Caddy, including media discovery, playback state, secure sessions, and encrypted playback grants. The implementation repository is private.
+
 ### Shrtn
 
 A published URL-shortening platform and Chrome/Brave extension with persistent links, QR-code generation, click analytics, PostgreSQL persistence, automated testing, and production security controls.
@@ -285,7 +299,8 @@ The test suite covers:
 jay-shell/
 ├── public/
 │   ├── favicon.svg
-│   ├── Jaysurya-Pazhani-Resume.pdf
+│   ├── resume.pdf
+│   ├── Jayasurya-Pazhani-Resume.pdf
 │   ├── robots.txt
 │   ├── site.webmanifest
 │   └── sitemap.xml

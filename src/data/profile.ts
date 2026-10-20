@@ -37,19 +37,20 @@ export const profile: Profile = {
     'Software Engineer | Full-Stack, Backend, and Quality Engineering',
 
   summary: [
-    'Software engineer with professional industry experience developing, supporting, testing, and troubleshooting enterprise applications.',
-    'Hands-on experience building frontend, backend, browser-extension, and cloud-deployed solutions using JavaScript, TypeScript, React, Angular, Node.js, Express, Java, SQL, REST APIs, and PostgreSQL.',
-    'Experienced in API integration, automated testing, CI/CD, debugging, application security controls, technical documentation, and Agile software delivery.',
+    'Software engineer and freelance developer building web applications, backend services, browser extensions, and developer tools. I work with React, Next.js, TypeScript, Node.js, Java, REST APIs, and relational databases.',
+    'My work includes a client-facing creator platform and digital storefront, alongside independent projects for URL shortening, screen recording, hydration reminders, and streaming.',
+    'I enjoy taking features from implementation through testing and deployment, and have experience investigating enterprise application issues and collaborating with engineering teams.',
   ],
 
   focusAreas: [
     'Full-stack software development',
     'Backend services and REST APIs',
-    'Frontend development with React and TypeScript',
+    'Frontend development with React, Next.js, and TypeScript',
     'Software testing and quality engineering',
     'Database integration and persistence',
     'Browser-extension development',
     'Developer tools and productivity systems',
+    'Production deployment and application maintenance',
   ],
 
   education: [
@@ -83,6 +84,18 @@ export const profile: Profile = {
   ],
 
   workExperience: [
+    {
+      title: 'Freelance Software Engineer',
+      company: 'Independent',
+      location: 'Ontario, Canada',
+      period: 'January 2025 - Present',
+      responsibilities: [
+        'Build and maintain web applications and developer tools using React, Next.js, TypeScript, Node.js, REST APIs, PostgreSQL, Supabase, and browser APIs.',
+        'Developed Life of Priya, a client-facing creator website and digital storefront with customer accounts, payments, digital delivery, bookings, and administrative workflows.',
+        'Integrated Supabase authentication and database services, Stripe and Razorpay payments, transactional email, and Google services into production client workflows.',
+        'Maintain independent projects including Shrtn, SipTime, Recordock, and Pazora, with attention to testing, deployment, security, debugging, and documentation.',
+      ],
+    },
     {
       title: 'Frontend Engineer Intern',
       company: 'Lump Financial Services',
@@ -140,16 +153,19 @@ export const profile: Profile = {
   ],
 
   handsOnExperience: [
+    'Built a production creator platform and storefront with Next.js, Supabase, and payment integrations',
+    'Built Pazora, a self-hosted streaming interface using Next.js, Jellyfin, HLS, and Caddy',
     'Designed and deployed the Shrtn full-stack URL-shortening platform',
     'Published Shrtn and SipTime through the Chrome Web Store',
-    'Built React and TypeScript user interfaces with Vite',
+    'Built React, Next.js, and TypeScript user interfaces with Vite and Tailwind CSS',
     'Developed Node.js and Express REST APIs',
-    'Integrated PostgreSQL databases hosted through Neon',
+    'Integrated PostgreSQL databases hosted through Neon and Supabase',
     'Created backend automated tests using Vitest and Supertest',
     'Configured GitHub Actions continuous integration',
     'Built Java and Spring Boot backend foundations',
     'Tested REST APIs using Postman and Rest Assured',
     'Worked with Selenium, TestNG, JUnit, Maven, Docker, and Jenkins',
+    'Used AI-assisted coding tools for prototyping, debugging, code review, and testing',
   ],
 
   skills: [
@@ -170,6 +186,7 @@ export const profile: Profile = {
       category: 'Frontend Development',
       skills: [
         'React',
+        'Next.js',
         'Angular',
         'Vite',
         'HTML5',
@@ -188,6 +205,7 @@ export const profile: Profile = {
         'Node.js',
         'Express',
         'Spring Boot',
+        'OpenAPI',
         'REST APIs',
         'API Integration',
         'Request Validation',
@@ -199,10 +217,12 @@ export const profile: Profile = {
       category: 'Databases',
       skills: [
         'PostgreSQL',
+        'Supabase',
         'MySQL',
         'MongoDB',
         'Oracle Database',
         'Neon',
+        'IndexedDB',
         'SQL Queries',
         'Database Migrations',
       ],
@@ -218,6 +238,8 @@ export const profile: Profile = {
         'Chrome Alarms API',
         'Chrome Notifications API',
         'Browser Storage',
+        'MediaRecorder API',
+        'Media Capture and Streams API',
       ],
     },
 
@@ -244,6 +266,7 @@ export const profile: Profile = {
       skills: [
         'Neon',
         'Railway',
+        'Vercel',
         'GitHub Actions',
         'Git',
         'GitHub',
@@ -251,6 +274,7 @@ export const profile: Profile = {
         'Jenkins',
         'Maven',
         'AWS',
+        'Caddy',
       ],
     },
 
@@ -265,6 +289,7 @@ export const profile: Profile = {
         'Technical Documentation',
         'Security Headers',
         'Rate Limiting',
+        'Authentication and Session Design',
       ],
     },
   ],

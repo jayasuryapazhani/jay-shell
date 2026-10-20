@@ -1,0 +1,212 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage{geometry}
+\input{glyphtounicode}
+
+\geometry{
+  top=0.30in,
+  bottom=0.25in,
+  left=0.5in,
+  right=0.5in
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\urlstyle{same}
+\raggedbottom
+\setlength{\tabcolsep}{0in}
+\justifying
+
+\titleformat{\section}{
+  \vspace{-2pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+
+\pdfgentounicode=1
+
+\newcommand{\resumeItem}[1]{
+  \item\small{\justifying{#1 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-4pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-2pt}
+}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.2in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2pt}}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape Jayasurya Pazhani} \\ \vspace{1pt}
+    \small Ontario, Canada $|$ 514-814-2085 $|$
+    \href{mailto:pazhanijayasurya@gmail.com}{\underline{pazhanijayasurya@gmail.com}} $|$
+    \href{https://www.linkedin.com/in/jayasurya-pazhani/}{\underline{linkedin.com/in/jayasurya-pazhani}} $|$
+    \href{https://github.com/jayasuryapazhani}{\underline{github.com/jayasuryapazhani}} $|$
+    \href{https://jay-shell.vercel.app/}{\underline{portfolio/}}
+\end{center}
+\vspace{-20pt}
+
+\section{Professional Summary}
+\small\justifying{Software Engineer and freelance developer with hands-on experience building, deploying, and maintaining frontend, backend, browser-extension, and cloud-connected products using JavaScript, TypeScript, React, Next.js, Angular, Node.js, Express, Java, Python, SQL, REST APIs, PostgreSQL, and Supabase. Delivers production client work and independently maintained software products with automated testing, CI/CD, application security, debugging, documentation, and deployment. Actively experiments with current AI-assisted software engineering workflows, including OpenAI Codex, GPT-6 Astra, Kimi K3, and agentic coding tools, while validating AI-assisted changes through tests, code review, and runtime checks. Holds a Master of Engineering in Software Engineering from Concordia University.}
+\vspace{-10pt}
+
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Freelance Software Engineer}{Jan 2025 -- Present}
+      {Independent}{Ontario, Canada}
+      \resumeItemListStart
+        \resumeItem{Build, deploy, and maintain client-facing and independent software products using React, TypeScript, JavaScript, Next.js, Node.js, Express, REST APIs, PostgreSQL, Supabase, browser APIs, and cloud/self-hosted deployment workflows.}
+        \resumeItem{Developed and maintain the \href{https://lifeofpriya.com}{\underline{Life of Priya}} creator platform for an independent influencer, including the public website and digital storefront, with responsive content experiences, customer accounts, payments, digital fulfillment, transactional email, booking workflows, and administrative tooling.}
+        \resumeItem{Maintain production and portfolio products including Shrtn, SipTime, Recordock, and Pazora, spanning full-stack APIs, browser extensions, local-first media capture, secure media delivery, automated testing, CI/CD, deployment, security controls, and technical documentation.}
+        \resumeItem{Use and evaluate current AI coding and agent workflows, including OpenAI Codex, GPT-6 Astra, Kimi K3, and Claw Code-style agent harnesses, to accelerate prototyping, debugging, test generation, code review, and refactoring while independently validating generated changes.}
+        \resumeItem{Continuously upskill in agentic AI, LLM-assisted development, developer tooling, and local/cloud experimentation to apply current software-engineering practices without overstating model or platform expertise.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Frontend Engineer Intern}{Jul 2024 -- Aug 2024}
+      {Lump Financial Services}{Montreal, QC}
+      \resumeItemListStart
+        \resumeItem{Developed responsive web pages and reusable frontend components using HTML5, CSS3, JavaScript, TypeScript, React, Node.js, and REST APIs.}
+        \resumeItem{Translated Figma designs and product requirements into functional user interfaces with a focus on clarity, usability, and mobile responsiveness.}
+        \resumeItem{Connected frontend screens with backend API responses, supported form handling, validated user input, and improved backend-connected user flows.}
+        \resumeItem{Debugged UI issues, layout inconsistencies, and API integration errors using browser developer tools, manual testing, and iterative fixes.}
+        \resumeItem{Worked closely with the team in a startup environment by clarifying requirements, documenting implementation details, and supporting Agile feature delivery.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Software Engineer -- SAP}{May 2023 -- Mar 2024}
+      {Cognizant}{Chennai, IN}
+      \resumeItemListStart
+        \resumeItem{Supported an SAP enterprise project by assisting with application enhancements, defect resolution, testing activities, technical documentation, and release support.}
+        \resumeItem{Collaborated with functional consultants, developers, and QA teams to understand requirements, investigate issues, and support stable application workflows.}
+        \resumeItem{Analyzed SAP-related application issues by reviewing logs, validating data flows, checking system behavior, and documenting root cause findings.}
+        \resumeItem{Contributed to small backend service updates and integration tasks using Java, SQL, REST APIs, and enterprise application tools.}
+        \resumeItem{Participated in Agile ceremonies, sprint discussions, daily status updates, test validation, and production release coordination.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Web Developer Intern}{Jun 2022 -- Aug 2022}
+      {SpaceZee}{Chennai, IN}
+      \resumeItemListStart
+        \resumeItem{Built and maintained responsive website pages using HTML, CSS, JavaScript, PHP, WordPress, and MySQL.}
+        \resumeItem{Updated website content, resolved UI issues, improved page layouts, and supported frontend enhancements for business-facing web pages.}
+        \resumeItem{Tested website functionality across browsers, identified layout and form issues, and documented fixes for internal tracking.}
+        \resumeItem{Worked with senior developers to troubleshoot frontend and backend issues related to form submissions, database-connected pages, and WordPress updates.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Junior Software Engineer}{May 2019 -- Jun 2020}
+      {Cognizant}{Chennai, IN}
+      \resumeItemListStart
+        \resumeItem{Supported enterprise applications through manual testing, debugging, documentation, issue analysis, and small backend service enhancements.}
+        \resumeItem{Created and executed test cases, validated application behavior, logged defects, and supported QA and development teams during release cycles.}
+        \resumeItem{Investigated application issues using SQL queries, logs, service responses, and internal support tools to help identify root causes.}
+        \resumeItem{Assisted with small backend utilities and service components using Java, SQL, and basic scripting in a production support environment.}
+        \resumeItem{Prepared technical documentation, defect notes, support handoff details, and status updates to improve team communication and knowledge sharing.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+\vspace{-15pt}
+
+\section{Projects}
+    \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\textbf{Shrtn -- URL Shortener \& Browser Extension} $|$ \emph{React, Node.js, Express, PostgreSQL, Manifest V3}}
+          {$|$ \href{https://chromewebstore.google.com/detail/shrtn/adodmibgcbmnhdagfkipjpjfkeaalfim}{\underline{Chrome Store}} $|$ \href{https://github.com/jayasuryapazhani/shrtn}{\underline{GitHub}}}
+          \resumeItemListStart
+            \resumeItem{Built and maintain a production full-stack URL-shortening platform and Chrome/Brave extension with persistent short links, redirect analytics, downloadable QR codes, context-menu actions, and browser-local recent-link history.}
+            \resumeItem{Implemented REST APIs with Node.js, Express, PostgreSQL/Neon, Zod validation, security headers, endpoint-specific rate limiting, trusted-proxy configuration, OpenAPI documentation, and Railway deployment.}
+            \resumeItem{Added duplicate-link handling, request timeouts, safe analytics retries, local result restoration, and context-menu workflows for shortening pages or selected hyperlinks without opening them.}
+            \resumeItem{Maintain 93 automated tests across backend and extension code with Vitest/Supertest, linting and production builds in GitHub Actions; published Shrtn v1.1.0 on the Chrome Web Store.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{SipTime -- Hydration Reminder Extension} $|$ \emph{React, TypeScript, Vite, Tailwind CSS, Manifest V3}}
+          {$|$ \href{https://siptime.vercel.app/}{\underline{Live}} $|$ \href{https://github.com/jayasuryapazhani/SipTime}{\underline{GitHub}}}
+          \resumeItemListStart
+            \resumeItem{Built and maintain a privacy-focused Chrome/Brave extension and Vercel landing page using React, TypeScript, Vite, Tailwind CSS, and Chrome Manifest V3; current application version is 1.2.0.}
+            \resumeItem{Implemented interval and fixed-time reminders, overnight quiet hours, configurable snoozing, reminder-state tracking, input validation, unsaved-change handling, and test notifications with Chrome Alarms, Notifications, and Storage APIs.}
+            \resumeItem{Designed the extension to operate without accounts, analytics, host permissions, or a custom backend, with settings persisted through browser storage and reminder scheduling handled by a background service worker.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Recordock -- Local-First Screen Recorder} $|$ \emph{React, TypeScript, MediaRecorder, IndexedDB, Manifest V3}}
+          {$|$ \href{https://recordock.vercel.app/}{\underline{Live}} $|$ \href{https://github.com/jayasuryapazhani/recordock}{\underline{GitHub}}}
+          \resumeItemListStart
+            \resumeItem{Actively developing and maintaining a privacy-focused Chrome screen recorder that captures tabs, windows, or displays, optionally includes source audio, previews completed recordings, and downloads WebM files locally.}
+            \resumeItem{Implemented a Manifest V3 architecture using a popup, service worker, offscreen document, Media Capture/MediaRecorder APIs, IndexedDB blob storage, and session state so recording can continue after the popup closes.}
+            \resumeItem{Published Recordock v0.1.0 on the Chrome Web Store and maintain automated validation covering recording states, audio options, preview controls, storage, formatting utilities, linting, tests, and production builds.}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Pazora -- Self-Hosted Streaming Platform} $|$ \emph{Next.js, React, TypeScript, Jellyfin, Caddy, HLS}}
+          {$|$ \href{https://media.lifeofpriya.com}{\underline{Live}} $|$ \href{https://github.com/jayasuryapazhani/lifeofpriya-media}{\underline{GitHub}}}
+          \resumeItemListStart
+            \resumeItem{Built a production movie-first streaming interface on top of Jellyfin using Next.js, React, TypeScript, Tailwind CSS, HLS.js, and Caddy, with personalized browsing, search, favorites, Continue Watching, recommendations, and responsive playback controls.}
+            \resumeItem{Designed a security boundary with server-managed sessions and short-lived encrypted playback grants so permanent Jellyfin access tokens are not exposed to browser JavaScript or client-visible media URLs.}
+            \resumeItem{Separated application/API traffic from media delivery, integrated secure HLS playback and transcoding, and productionized the Windows-hosted stack with health checks and reboot-persistent services.}
+          \resumeItemListEnd
+
+    \resumeSubHeadingListEnd
+\vspace{-15pt}
+
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: JavaScript, TypeScript, Java, Python, SQL, C/C++} \\
+     \textbf{Frontend}{: React, Next.js, Angular, Vite, HTML5, CSS3, Tailwind CSS, Bootstrap, Responsive Design} \\
+     \textbf{Backend \& APIs}{: Node.js, Express, Spring Boot, REST APIs, API Integration, OpenAPI} \\
+     \textbf{Databases \& Backend Services}{: PostgreSQL, Supabase, Neon, MySQL, MongoDB, Oracle DB, IndexedDB} \\
+     \textbf{Testing \& Quality}{: Vitest, Supertest, JUnit, Mockito, Postman, React Testing Library, Manual Testing, Unit Testing, Debugging} \\
+     \textbf{Cloud \& DevOps}{: Vercel, Railway, GitHub Actions, Git, GitHub, Docker, Jenkins, Maven, AWS, Caddy} \\
+     \textbf{AI-Assisted Development}{: OpenAI Codex, GPT-6 Astra, Kimi K3, Claw Code/agent-harness experimentation, agentic coding workflows, AI-assisted debugging, testing, code review, and refactoring} \\
+     \textbf{Browser \& Media APIs}{: Chrome Manifest V3, Chrome Extension APIs, MediaRecorder, Media Capture and Streams API, HLS, Browser Storage} \\
+     \textbf{Security \& Practices}{: Request Validation, Security Headers, Rate Limiting, Auth/Session Design, Agile/Scrum, Documentation, OOP}
+    }}
+ \end{itemize}
+ \vspace{-15pt}
+
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Concordia University}{Montreal, QC}
+      {Master of Engineering, Software Engineering}{Jan. 2024 -- Jun. 2025}
+    \resumeSubheading
+      {SRM University}{Chennai, IN}
+      {Bachelor of Science, Computer Science}{Aug. 2016 -- May 2019}
+  \resumeSubHeadingListEnd
+
+\end{document}
