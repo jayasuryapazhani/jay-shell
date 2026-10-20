@@ -191,7 +191,7 @@ it('runs the about command when About Me is clicked', async () => {
 
   expect(viewResumeLink).toHaveAttribute(
     'href',
-    '/Jayasurya-Pazhani-Resume.pdf',
+    '/resume.pdf',
   )
 
   expect(viewResumeLink).toHaveAttribute(
@@ -213,7 +213,7 @@ it('runs the about command when About Me is clicked', async () => {
 
   expect(downloadResumeLink).toHaveAttribute(
     'href',
-    '/Jayasurya-Pazhani-Resume.pdf',
+    '/resume.pdf',
   )
 
   expect(downloadResumeLink).toHaveAttribute(
