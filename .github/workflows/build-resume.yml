@@ -7,6 +7,7 @@ on:
       - 'feat/**'
     paths:
       - 'resume/master.tex'
+      - '.github/workflows/build-resume.yml'
   workflow_dispatch:
 
 permissions:
@@ -40,5 +41,6 @@ jobs:
           git add public/resume.pdf public/Jayasurya-Pazhani-Resume.pdf
           if ! git diff --cached --quiet; then
             git commit -m "Update compiled portfolio resume"
-            git push
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
           fi
