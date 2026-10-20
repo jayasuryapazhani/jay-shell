@@ -42,6 +42,14 @@ describe('virtual filesystem', () => {
     expect(recordockDirectory?.title).toBe('Recordock')
   })
 
+  it('includes directories for current client and self-hosted work', () => {
+    const clientProject = getDirectoryByPath(['projects', 'life-of-priya'])
+    const streamingProject = getDirectoryByPath(['projects', 'pazora'])
+
+    expect(clientProject?.name).toBe('life-of-priya')
+    expect(streamingProject?.name).toBe('pazora')
+  })
+
   it('returns null for a directory that does not exist', () => {
     const missingDirectory = getDirectoryByPath([
       'projects',
@@ -53,10 +61,10 @@ describe('virtual filesystem', () => {
 })
 
 describe('project portfolio data', () => {
-  it('contains eight configured projects', () => {
+  it('contains ten configured projects', () => {
     const projects = getAllProjects()
 
-    expect(projects).toHaveLength(8)
+    expect(projects).toHaveLength(10)
   })
 
   it('keeps project data synchronized with project directories', () => {
@@ -72,6 +80,18 @@ describe('project portfolio data', () => {
       .sort()
 
     expect(projectSlugs).toEqual(directorySlugs)
+  })
+
+  it('shows new production projects and keeps private links private', () => {
+    const clientProject = getProjectByPath(['projects', 'life-of-priya'])
+    const streamingProject = getProjectByPath(['projects', 'pazora'])
+    const shrtn = getProjectByPath(['projects', 'shrtn'])
+
+    expect(clientProject?.demoUrl).toBe('https://lifeofpriya.com/')
+    expect(clientProject?.githubUrl).toBeUndefined()
+    expect(streamingProject?.demoUrl).toBeUndefined()
+    expect(streamingProject?.githubUrl).toBeUndefined()
+    expect(shrtn?.demoUrl).toBeUndefined()
   })
 
   it('resolves project details from a virtual path', () => {
