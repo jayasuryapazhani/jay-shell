@@ -155,6 +155,14 @@ store
 
 ## Portfolio Projects
 
+### Life of Priya / JayStore
+
+A live freelance client platform and digital storefront built with Next.js, React, TypeScript, and Supabase, with payment processing, account management, digital delivery, bookings, and administration. The implementation repository is private.
+
+### Pazora
+
+A privately deployed streaming interface built with Next.js, Jellyfin, HLS.js, and Caddy, including media discovery, playback state, secure sessions, and encrypted playback grants. The implementation repository is private.
+
 ### Shrtn
 
 A published URL-shortening platform and Chrome/Brave extension with persistent links, QR-code generation, click analytics, PostgreSQL persistence, automated testing, and production security controls.
@@ -291,7 +299,8 @@ The test suite covers:
 jay-shell/
 ├── public/
 │   ├── favicon.svg
-│   ├── Jaysurya-Pazhani-Resume.pdf
+│   ├── resume.pdf
+│   ├── Jayasurya-Pazhani-Resume.pdf
 │   ├── robots.txt
 │   ├── site.webmanifest
 │   └── sitemap.xml
